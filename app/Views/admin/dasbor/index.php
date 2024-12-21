@@ -3,7 +3,7 @@ use App\Models\Dasbor_model;
 
 $m_dasbor = new Dasbor_model();
 ?>
-<div class="alert alert-warning">
+<div class="alert bg-lazis">
 	<h4>Hai <em class="text-white"><?= $session->get('nama') ?></em></h4>
 	</div>
 

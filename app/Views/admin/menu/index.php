@@ -6,7 +6,7 @@
         <div class="row">
             <!-- Group Section -->
             <div class="col-md-4">
-                <div class="card card-warning">
+                <div class="card bg-lazis text-white">
                     <div class="card-header">
                         <h3 class="card-title">Group</h3>
                     </div>
@@ -26,8 +26,8 @@
 
             <!-- Menu Section -->
             <div class="col-md-8">
-                <div class="card card-warning">
-                    <div class="card-header">
+                <div class="card ">
+                    <div class="card-header bg-lazis text-white">
                         <h3 class="card-title">Menu</h3>
                     </div>
                     <div class="card-body p-3">

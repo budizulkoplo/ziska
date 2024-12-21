@@ -2,7 +2,7 @@
     <h3 class="text-center">Kalkulator Zakat</h3>
 
     <div class="card">
-        <div class="card-header bg-success text-white">
+        <div class="card-header bg-lazis text-white">
             Pilih Jenis Zakat
         </div>
         <div class="card-body">

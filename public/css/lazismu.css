@@ -1,0 +1,13 @@
+/* Mengubah warna bg-primary */
+.bg-lazis {
+    background-color: #ff6a0d !important; /* Warna baru */
+    border-color: #ff6a0d !important; /* Border sesuai warna */
+}
+.bg-white {
+    background-color: #ffffff !important; /* Warna baru */
+    border-color: #ff6a0d !important; /* Border sesuai warna */
+}
+.btn-success {
+    background-color: #ff6a0d !important; /* Warna baru */
+    border-color: #ff6a0d !important; /* Border sesuai warna */
+}

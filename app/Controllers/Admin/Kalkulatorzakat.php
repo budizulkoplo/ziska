@@ -10,7 +10,6 @@ class Kalkulatorzakat extends BaseController
         $data = [
             'title'   => 'Kalkulator Zakat',
             'content' => 'admin/kalkulatorzakat/index',
-            'js_file' => '',
         ];
         echo view('admin/layout/wrapper', $data);
     }
@@ -18,20 +17,12 @@ class Kalkulatorzakat extends BaseController
     public function templateZakat($type)
     {
         checklogin();
-    
         $viewPath = "admin/kalkulatorzakat/{$type}";
-        $scriptPath = "views/admin/kalkulatorzakat/js/{$type}.js";
-    
         if (file_exists(APPPATH . "Views/{$viewPath}.php")) {
-            $data = [
-                'js_file' => $scriptPath,
-            ];
-            return view($viewPath, $data);
+            return view($viewPath);
         }
-    
         return '<p class="text-danger">Form zakat tidak ditemukan.</p>';
     }
-    
 
     
 }
