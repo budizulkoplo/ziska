@@ -101,6 +101,3 @@
     </form>
     <button type="button" class="btn btn-success w-100 mt-4" onclick="hitungZakatMaal()">Hitung Zakat</button>
 </div>
-
-<script src="<?= base_url('public/js/maal.js'); ?>"></script>
-

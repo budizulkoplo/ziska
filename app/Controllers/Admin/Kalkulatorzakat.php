@@ -4,39 +4,34 @@ namespace App\Controllers\Admin;
 
 class Kalkulatorzakat extends BaseController
 {
-    // Halaman utama
     public function index()
     {
         checklogin();
-
         $data = [
             'title'   => 'Kalkulator Zakat',
-            'content' => 'admin/kalkulatorzakat/index', // Halaman utama dengan menu pilihan jenis zakat
+            'content' => 'admin/kalkulatorzakat/index',
+            'js_file' => '',
         ];
         echo view('admin/layout/wrapper', $data);
     }
 
-    // Halaman Zakat Maal
-    public function maal()
+    public function templateZakat($type)
     {
         checklogin();
-
-        $data = [
-            'title'   => 'Zakat Harta (Maal)',
-            'content' => 'admin/kalkulatorzakat/maal', // View untuk kalkulator Zakat Maal
-        ];
-        echo view('admin/layout/wrapper', $data);
+    
+        $viewPath = "admin/kalkulatorzakat/{$type}";
+        $scriptPath = "views/admin/kalkulatorzakat/js/{$type}.js";
+    
+        if (file_exists(APPPATH . "Views/{$viewPath}.php")) {
+            $data = [
+                'js_file' => $scriptPath,
+            ];
+            return view($viewPath, $data);
+        }
+    
+        return '<p class="text-danger">Form zakat tidak ditemukan.</p>';
     }
+    
 
-    // Halaman Zakat Pertanian
-    public function pertanian()
-    {
-        checklogin();
-
-        $data = [
-            'title'   => 'Zakat Pertanian',
-            'content' => 'admin/kalkulatorzakat/pertanian', // View untuk kalkulator Zakat Pertanian
-        ];
-        echo view('admin/layout/wrapper', $data);
-    }
+    
 }

@@ -20,7 +20,7 @@ function hitungZakatMaal() {
     const jumlahZakat = document.getElementById('jumlahZakat');
 
     if (hartaKenaZakat >= jumlahNisab) {
-        statusNisab.textContent = 'Sudah Mencapai Nisab';
+        statusNisab.textContent = 'Sudah Mencapai Nisabs';
         statusNisab.classList.remove('text-danger');
         statusNisab.classList.add('text-success');
 
@@ -33,3 +33,4 @@ function hitungZakatMaal() {
         jumlahZakat.value = 0;
     }
 }
+
