@@ -14,13 +14,11 @@
                             <option value="">Pilih Jenis Zakat</option>
                             <option value="maal">Zakat Harta (Maal)</option>
                             <option value="pertanian">Zakat Pertanian</option>
-                            <!-- Tambahkan lebih banyak jenis zakat -->
                         </select>
                     </div>
                 </div>
             </form>
 
-            <!-- Kontainer untuk form zakat -->
             <div id="zakatContainer"></div>
         </div>
     </div>
@@ -35,18 +33,27 @@
             zakatContainer.innerHTML = '';
             return;
         }
-
-        // Load konten form dari server
         try {
-            const baseUrl = '<?= base_url() ?>'; // Mengambil base URL dari PHP
+            const baseUrl = '<?= base_url() ?>'; 
             const response = await fetch(`${baseUrl}/admin/kalkulatorzakat/templatezakat/${jenisZakat}`);
-
             const html = await response.text();
             zakatContainer.innerHTML = html;
+
+            const scriptUrl = `${baseUrl}/public/js/zakat/${jenisZakat}.js`; 
+
+            const script = document.createElement('script');
+            script.src = scriptUrl;
+            script.type = 'text/javascript';
+            document.body.appendChild(script);
+
+            script.onerror = function() {
+                zakatContainer.innerHTML = '<p class="text-danger">Terjadi kesalahan saat memuat JavaScript.</p>';
+            };
+
         } catch (error) {
             zakatContainer.innerHTML = '<p class="text-danger">Terjadi kesalahan saat memuat form zakat.</p>';
         }
     }
 </script>
 
-<script src="<?= $js_file ?>"></script>
+
