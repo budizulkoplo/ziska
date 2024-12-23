@@ -1,10 +1,12 @@
-<?= form_open('admin/wakaf/store') ?>
+<?= form_open('admin/wakaf/store', ['enctype' => 'multipart/form-data']) ?>
+
 <div class="form-group row">
     <label class="col-3">ID Object</label>
     <div class="col-9">
         <input type="text" name="idobject" class="form-control" placeholder="ID Object" required>
     </div>
 </div>
+
 <div class="form-group row">
     <label class="col-3">No Sertifikat</label>
     <div class="col-9">
@@ -49,6 +51,21 @@
         </select>
     </div>
 </div>
+
+<div class="form-group row">
+    <label class="col-3">Upload Foto Surat</label>
+    <div class="col-9">
+        <input type="file" name="surat[]" class="form-control" accept="image/*,application/pdf" multiple>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-3">Upload Foto Objek</label>
+    <div class="col-9">
+        <input type="file" name="objek[]" class="form-control" accept="image/*" multiple>
+    </div>
+</div>
+
 
 <div class="form-group row">
     <div class="col-9 offset-3">
