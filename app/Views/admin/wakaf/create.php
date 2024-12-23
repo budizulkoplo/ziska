@@ -56,6 +56,7 @@
     <label class="col-3">Upload Foto Surat</label>
     <div class="col-9">
         <input type="file" name="surat[]" class="form-control" accept="image/*,application/pdf" multiple>
+        <small class="form-text text-muted">Unggah lebih dari satu file dengan menekan CTRL (atau CMD di Mac).</small>
     </div>
 </div>
 
@@ -63,8 +64,10 @@
     <label class="col-3">Upload Foto Objek</label>
     <div class="col-9">
         <input type="file" name="objek[]" class="form-control" accept="image/*" multiple>
+        <small class="form-text text-muted">Unggah lebih dari satu file dengan menekan CTRL (atau CMD di Mac).</small>
     </div>
 </div>
+
 
 
 <div class="form-group row">

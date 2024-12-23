@@ -49,8 +49,8 @@ class Wakaf extends BaseController
         'pewakaf'      => 'required|string|max_length[255]',
         'keterangan'   => 'permit_empty|string',
         'status'       => 'required|string|max_length[50]',
-        'surat'         => 'permit_empty|uploaded[surat]|is_image[surat]|max_size[surat,2048]',
-        'objek'         => 'permit_empty|uploaded[objek]|is_image[objek]|max_size[objek,2048]',
+        'surat'         => 'permit_empty|uploaded[surat.*]|is_image[surat.*]|max_size[surat.*,2048]',
+        'objek'         => 'permit_empty|uploaded[objek.*]|is_image[objek.*]|max_size[objek.*,2048]',
     ])) {
         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
@@ -69,16 +69,16 @@ class Wakaf extends BaseController
     $idwakaf = $m_wakaf->insert($data);  // Insert data wakaf dan ambil ID-nya
 
     // Upload foto surat jika ada
-    if ($suratFiles = $this->request->getFiles('surat')) {
+    if ($suratFiles = $this->request->getFileMultiple('surat')) {
         foreach ($suratFiles as $file) {
-            if (is_object($file) && $file->isValid() && !$file->hasMoved()) {
+            if ($file->isValid() && !$file->hasMoved()) {
                 $filename = $file->getRandomName();  // Membuat nama file acak
-                $file->move(WRITEPATH . 'uploads/wakaf', $filename);
+                $file->move(FCPATH . 'uploads/wakaf', $filename);
 
                 // Menyimpan data foto surat ke database
                 $fotoData = [
                     'idobject'   => $this->request->getPost('idobject'),
-                    'namafoto'   => $file->getName(),
+                    'namafoto'   => $file->getClientName(),
                     'filefoto'   => $filename,
                     'jenis'      => 'surat',
                 ];
@@ -88,16 +88,16 @@ class Wakaf extends BaseController
     }
 
     // Upload foto objek jika ada
-    if ($objekFiles = $this->request->getFiles('objek')) {
+    if ($objekFiles = $this->request->getFileMultiple('objek')) {
         foreach ($objekFiles as $file) {
-            if (is_object($file) && $file->isValid() && !$file->hasMoved()) {
+            if ($file->isValid() && !$file->hasMoved()) {
                 $filename = $file->getRandomName();
-                $file->move(WRITEPATH . 'uploads/wakaf', $filename);
+                $file->move(FCPATH . 'uploads/wakaf', $filename);
 
                 // Menyimpan data foto objek ke database
                 $fotoData = [
                     'idobject'   => $this->request->getPost('idobject'),
-                    'namafoto'   => $file->getName(),
+                    'namafoto'   => $file->getClientName(),
                     'filefoto'   => $filename,
                     'jenis'      => 'objek',
                 ];
@@ -109,6 +109,7 @@ class Wakaf extends BaseController
     $this->session->setFlashdata('sukses', 'Wakaf berhasil ditambahkan');
     return redirect()->to(base_url('admin/wakaf'));
 }
+
 
 
     // Menangani proses upload foto
