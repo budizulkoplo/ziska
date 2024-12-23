@@ -221,15 +221,22 @@ class Wakaf extends BaseController
 
     // Menghapus foto terkait wakaf
     private function deleteFotowakaf($idobject)
-    {
-        $m_fotowakaf = new FotowakafModel();
-        $fotowakaf = $m_fotowakaf->where('idobject', $idobject)->findAll();
+{
+    $m_fotowakaf = new FotowakafModel();
+    $fotowakaf = $m_fotowakaf->where('idobject', $idobject)->findAll();
 
-        foreach ($fotowakaf as $foto) {
-            unlink(WRITEPATH . 'uploads/wakaf/' . $foto['filefoto']);
-            $m_fotowakaf->delete($foto['idfoto']);
+    foreach ($fotowakaf as $foto) {
+        $filePath = FCPATH . 'uploads/wakaf/' . $foto['filefoto'];  // Pastikan path benar
+        if (file_exists($filePath)) {  // Cek apakah file ada
+            unlink($filePath);  // Hapus file
+        } else {
+            log_message('error', "File tidak ditemukan: {$filePath}");  // Log error jika file tidak ditemukan
         }
+
+        $m_fotowakaf->delete($foto['idfoto']);
     }
+}
+
 }
 
 
