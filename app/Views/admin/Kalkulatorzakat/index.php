@@ -10,11 +10,13 @@
                 <div class="form-group row">
                     <label for="jenisZakat" class="col-sm-6 col-form-label">Jenis Zakat</label>
                     <div class="col-sm-6">
-                        <select class="form-control" id="jenisZakat" onchange="showZakatForm()">
-                            <option value="">Pilih Jenis Zakat</option>
-                            <option value="maal">Zakat Harta (Maal)</option>
-                            <option value="pertanian">Zakat Pertanian</option>
-                        </select>
+                    <select class="form-control" id="jenisZakat" onchange="showZakatForm()">
+                        <option value="">Pilih Jenis Zakat</option>
+                        <option value="maal">Zakat Harta (Maal)</option>
+                        <option value="pertanian">Zakat Pertanian</option>
+                        <option value="temuan">Zakat Temuan</option>
+                        <option value="hadiah">Zakat Hadiah</option>
+                    </select>
                     </div>
                 </div>
             </form>

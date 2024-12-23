@@ -22,7 +22,7 @@ class Kalkulatorzakat extends BaseController
             return view($viewPath);
         }
         return '<p class="text-danger">Form zakat tidak ditemukan.</p>';
-    }
+    }    
 
     
 }
