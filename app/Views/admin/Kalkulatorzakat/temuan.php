@@ -22,5 +22,13 @@
             </div>
         </div>
     </form>
-    <button type="button" class="btn btn-success w-100 mt-4" onclick="hitungZakatTemuan()">Hitung Zakat</button>
+    
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <button type="button" class="btn btn-success w-100 mt-4" onclick="hitungZakatTemuan()">Hitung Zakat</button>
+        </div>
+        <div class="col-sm-6">
+            <button type="button" class="btn btn-outline-primary w-100 mt-4" onclick="bayarZakatMaal()"><i class="nav-icon fas fa-calculator"></i> Bayar Zakat</button>
+        </div>
+    </div>
 </div>

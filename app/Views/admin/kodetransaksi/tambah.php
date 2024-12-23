@@ -35,6 +35,20 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Select Rekening -->
+                <div class="form-group row">
+                    <label for="idrekening" class="col-3 col-form-label">Rekening</label>
+                    <div class="col-9">
+                        <select id="idrekening" name="idrekening" class="form-control" required>
+                            <option value="">Pilih Rekening</option>
+                            <?php foreach ($rekening as $rek): ?>
+                                <option value="<?= $rek['idrek'] ?>" <?= set_select('idrekening', $rek['idrek']) ?>><?= esc($rek['namarek']) ?> - <?= esc($rek['norek']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Modal Footer -->
