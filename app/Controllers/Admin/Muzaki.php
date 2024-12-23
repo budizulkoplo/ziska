@@ -58,7 +58,7 @@ class Muzaki extends BaseController
             // Cek apakah file berhasil diunggah
             if ($fileFoto->isValid() && !$fileFoto->hasMoved()) {
                 $namaFoto = $fileFoto->getRandomName(); // Generate nama unik
-                $fileFoto->move(ROOTPATH . 'public/assets/upload/muzaki/', $namaFoto); // Simpan file di folder
+                $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto); // Simpan file di folder
 
             } else {
                 // Jika gagal upload, kembalikan ke halaman add dengan error
@@ -127,12 +127,12 @@ class Muzaki extends BaseController
         // Jika ada file yang diunggah
         if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
             // Hapus foto lama jika ada
-            if (file_exists(ROOTPATH . 'public/assets/upload/muzaki/' . $muzaki['foto'])) {
-                unlink(ROOTPATH . 'public/assets/upload/muzaki/' . $muzaki['foto']);
+            if (file_exists(ROOTPATH . 'assets/upload/image/' . $muzaki['foto'])) {
+                unlink(ROOTPATH . 'assets/upload/image/' . $muzaki['foto']);
             }
 
             $namaFoto = $fileFoto->getRandomName(); // Generate nama unik
-            $fileFoto->move(ROOTPATH . 'public/assets/upload/muzaki/', $namaFoto); // Simpan file di folder
+            $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto); // Simpan file di folder
         }
 
         // Simpan data yang sudah diubah

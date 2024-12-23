@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\TransaksiModel;
+use App\Models\KodetransaksiModel; 
 
 class Transaksi extends BaseController
 {
@@ -25,12 +26,20 @@ class Transaksi extends BaseController
     public function create()
     {
         checklogin();  // Pastikan pengguna sudah login
+        $m_kodetransaksi = new KodetransaksiModel();
+        
+        // Ambil hanya kodetransaksi dengan cashflow 'Pemasukan'
+        $kodetransaksi = $m_kodetransaksi->where('cashflow', 'Pemasukan')->findAll(); 
+
         $data = [
-            'title'   => 'Tambah Transaksi',
-            'content' => 'admin/transaksi/create',  // View untuk form tambah transaksi
+            'title'       => 'Tambah Transaksi',
+            'kodetransaksi' => $kodetransaksi, // Mengirimkan data kodetransaksi yang telah difilter ke view
+            'content'     => 'admin/transaksi/create',  // View untuk form tambah transaksi
         ];
         echo view('admin/layout/wrapper', $data);
     }
+
+
 
     // Menyimpan data transaksi baru
     public function store()

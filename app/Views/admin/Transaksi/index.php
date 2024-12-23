@@ -23,7 +23,7 @@
             <td><?= esc($item['tipetransaksi']) ?></td>
             <td><?= esc($item['tgltransaksi']) ?></td>
             <td><?= esc($item['muzaki']) ?></td>
-            <td><?= number_format($item['nominal'], 2) ?></td>
+            <td>Rp. <?= number_format($item['nominal'], 2) ?></td>
             <td><?= esc($item['keterangan']) ?></td>
             <td>
                 <a href="<?= base_url('admin/transaksi/edit/' . $item['idtransaksi']) ?>" class="btn btn-success btn-sm">

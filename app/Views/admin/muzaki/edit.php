@@ -3,7 +3,7 @@
 		<img src="<?php if ($muzaki['foto'] === '') {
 			echo icon();
 		} else {
-			echo base_url('public/assets/upload/muzaki/' . $muzaki['foto']);
+			echo base_url('assets/upload/image/' . $muzaki['foto']);
 		} ?>" class="img img-thumbnail">
 	</div>
 	<div class="col-9">
