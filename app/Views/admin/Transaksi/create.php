@@ -23,7 +23,7 @@
     <div class="form-group row">
         <label for="tgltransaksi" class="col-3 col-form-label">Tanggal Transaksi</label>
         <div class="col-9">
-            <input type="datetime-local" id="tgltransaksi" name="tgltransaksi" class="form-control" value="<?= set_value('tgltransaksi') ?>" required>
+            <input type="date" id="tgltransaksi" name="tgltransaksi" class="form-control" value="<?= set_value('tgltransaksi') ?>" required>
         </div>
     </div>
 
