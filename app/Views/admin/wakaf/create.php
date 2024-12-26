@@ -43,6 +43,13 @@
 </div>
 
 <div class="form-group row">
+    <label class="col-3">URL Google Maps</label>
+    <div class="col-9">
+        <input type="url" name="urlmaps" id="urlmaps" class="form-control" required>
+    </div>
+</div>
+
+<div class="form-group row">
     <label class="col-3">Status</label>
     <div class="col-9">
         <select name="status" class="form-control" required>

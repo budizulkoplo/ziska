@@ -35,80 +35,82 @@ class Wakaf extends BaseController
 
     // Menyimpan data wakaf baru
     public function store()
-{
-    checklogin();  // Pastikan pengguna sudah login
-    $m_wakaf = new WakafModel();
-    $m_fotowakaf = new FotowakafModel();
+    {
+        checklogin();  // Pastikan pengguna sudah login
+        $m_wakaf = new WakafModel();
+        $m_fotowakaf = new FotowakafModel();
 
-    // Validasi input
-    if (!$this->validate([
-        'idobject'     => 'required|string|max_length[255]',
-        'nosertifikat' => 'required|string|max_length[255]',
-        'alamat'       => 'required|string',
-        'koordinat'    => 'required|string|max_length[255]',
-        'pewakaf'      => 'required|string|max_length[255]',
-        'keterangan'   => 'permit_empty|string',
-        'status'       => 'required|string|max_length[50]',
-        'surat'         => 'permit_empty|uploaded[surat.*]|is_image[surat.*]|max_size[surat.*,2048]',
-        'objek'         => 'permit_empty|uploaded[objek.*]|is_image[objek.*]|max_size[objek.*,2048]',
-    ])) {
-        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-    }
+        // Validasi input
+        if (!$this->validate([
+            'idobject'     => 'required|string|max_length[255]',
+            'nosertifikat' => 'required|string|max_length[255]',
+            'alamat'       => 'required|string',
+            'koordinat'    => 'required|string|max_length[255]',
+            'pewakaf'      => 'required|string|max_length[255]',
+            'keterangan'   => 'permit_empty|string',
+            'status'       => 'required|string|max_length[50]',
+            'urlmaps'      => 'required|valid_url|max_length[255]', // Validasi URL Google Maps
+            'surat'        => 'permit_empty|uploaded[surat.*]|is_image[surat.*]|max_size[surat.*,2048]',
+            'objek'        => 'permit_empty|uploaded[objek.*]|is_image[objek.*]|max_size[objek.*,2048]',
+        ])) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
 
-    // Menyimpan data wakaf
-    $data = [
-        'idobject'     => $this->request->getPost('idobject'),
-        'nosertifikat' => $this->request->getPost('nosertifikat'),
-        'alamat'       => $this->request->getPost('alamat'),
-        'koordinat'    => $this->request->getPost('koordinat'),
-        'pewakaf'      => $this->request->getPost('pewakaf'),
-        'keterangan'   => $this->request->getPost('keterangan'),
-        'status'       => $this->request->getPost('status'),
-    ];
+        // Menyimpan data wakaf
+        $data = [
+            'idobject'     => $this->request->getPost('idobject'),
+            'nosertifikat' => $this->request->getPost('nosertifikat'),
+            'alamat'       => $this->request->getPost('alamat'),
+            'koordinat'    => $this->request->getPost('koordinat'),
+            'pewakaf'      => $this->request->getPost('pewakaf'),
+            'keterangan'   => $this->request->getPost('keterangan'),
+            'status'       => $this->request->getPost('status'),
+            'urlmaps'      => $this->request->getPost('urlmaps'), // Tambahkan URL Maps
+        ];
 
-    $idwakaf = $m_wakaf->insert($data);  // Insert data wakaf dan ambil ID-nya
+        $idwakaf = $m_wakaf->insert($data);  // Insert data wakaf dan ambil ID-nya
 
-    // Upload foto surat jika ada
-    if ($suratFiles = $this->request->getFileMultiple('surat')) {
-        foreach ($suratFiles as $file) {
-            if ($file->isValid() && !$file->hasMoved()) {
-                $filename = $file->getRandomName();  // Membuat nama file acak
-                $file->move(FCPATH . 'uploads/wakaf', $filename);
+        // Upload foto surat jika ada
+        if ($suratFiles = $this->request->getFileMultiple('surat')) {
+            foreach ($suratFiles as $file) {
+                if ($file->isValid() && !$file->hasMoved()) {
+                    $filename = $file->getRandomName();  // Membuat nama file acak
+                    $file->move(FCPATH . 'uploads/wakaf', $filename);
 
-                // Menyimpan data foto surat ke database
-                $fotoData = [
-                    'idobject'   => $this->request->getPost('idobject'),
-                    'namafoto'   => $file->getClientName(),
-                    'filefoto'   => $filename,
-                    'jenis'      => 'surat',
-                ];
-                $m_fotowakaf->insert($fotoData);
+                    // Menyimpan data foto surat ke database
+                    $fotoData = [
+                        'idobject'   => $this->request->getPost('idobject'),
+                        'namafoto'   => $file->getClientName(),
+                        'filefoto'   => $filename,
+                        'jenis'      => 'surat',
+                    ];
+                    $m_fotowakaf->insert($fotoData);
+                }
             }
         }
-    }
 
-    // Upload foto objek jika ada
-    if ($objekFiles = $this->request->getFileMultiple('objek')) {
-        foreach ($objekFiles as $file) {
-            if ($file->isValid() && !$file->hasMoved()) {
-                $filename = $file->getRandomName();
-                $file->move(FCPATH . 'uploads/wakaf', $filename);
+        // Upload foto objek jika ada
+        if ($objekFiles = $this->request->getFileMultiple('objek')) {
+            foreach ($objekFiles as $file) {
+                if ($file->isValid() && !$file->hasMoved()) {
+                    $filename = $file->getRandomName();
+                    $file->move(FCPATH . 'uploads/wakaf', $filename);
 
-                // Menyimpan data foto objek ke database
-                $fotoData = [
-                    'idobject'   => $this->request->getPost('idobject'),
-                    'namafoto'   => $file->getClientName(),
-                    'filefoto'   => $filename,
-                    'jenis'      => 'objek',
-                ];
-                $m_fotowakaf->insert($fotoData);
+                    // Menyimpan data foto objek ke database
+                    $fotoData = [
+                        'idobject'   => $this->request->getPost('idobject'),
+                        'namafoto'   => $file->getClientName(),
+                        'filefoto'   => $filename,
+                        'jenis'      => 'objek',
+                    ];
+                    $m_fotowakaf->insert($fotoData);
+                }
             }
         }
-    }
 
-    $this->session->setFlashdata('sukses', 'Wakaf berhasil ditambahkan');
-    return redirect()->to(base_url('admin/wakaf'));
-}
+        $this->session->setFlashdata('sukses', 'Wakaf berhasil ditambahkan');
+        return redirect()->to(base_url('admin/wakaf'));
+    }
 
 
 
