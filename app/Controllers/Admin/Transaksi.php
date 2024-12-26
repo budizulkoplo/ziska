@@ -39,6 +39,21 @@ class Transaksi extends BaseController
         echo view('admin/layout/wrapper', $data);
     }
 
+    public function zakat()
+    {
+        checklogin();  // Pastikan pengguna sudah login
+        $m_kodetransaksi = new KodetransaksiModel();
+        
+        // Ambil hanya kodetransaksi dengan cashflow 'Pemasukan'
+        $kodetransaksi = $m_kodetransaksi->where('cashflow', 'Pemasukan')->findAll(); 
+
+        $data = [
+            'title'       => 'Bayar Zakat',
+            'kodetransaksi' => $kodetransaksi, // Mengirimkan data kodetransaksi yang telah difilter ke view
+            'content'     => 'admin/transaksi/zakat',  // View untuk form tambah transaksi
+        ];
+        echo view('admin/layout/wrapper', $data);
+    }
 
 
     // Menyimpan data transaksi baru
