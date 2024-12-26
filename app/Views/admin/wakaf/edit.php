@@ -78,12 +78,17 @@
             <div class="mb-2">
                 <p>Foto Surat yang Tersedia:</p>
                 <?php foreach ($surat as $file): ?>
-                    <img src="<?= base_url('uploads/wakaf/' . $file['filefoto']) ?>" alt="Surat" class="img-thumbnail" style="max-width: 150px; margin-right: 10px;">
+                    <?php if (pathinfo($file['filefoto'], PATHINFO_EXTENSION) == 'pdf'): ?>
+                        <a href="<?= base_url('uploads/wakaf/' . $file['filefoto']) ?>" target="_blank" class="btn btn-sm btn-outline-primary mr-2 mb-2">Lihat PDF</a>
+                    <?php else: ?>
+                        <img src="<?= base_url('uploads/wakaf/' . $file['filefoto']) ?>" alt="Surat" class="img-thumbnail" style="max-width: 150px; margin-right: 10px;">
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-        <input type="file" name="surat[]" class="form-control" accept="image/*,application/pdf" multiple>
+        <input type="file" name="surat[]" class="form-control" accept="image/*,application/pdf" multiple id="inputSurat">
         <small class="form-text text-muted">Unggah lebih dari satu file dengan menekan CTRL (atau CMD di Mac). Kosongkan jika tidak ingin mengganti.</small>
+        <div id="previewSurat" class="mt-2"></div>
     </div>
 </div>
 
@@ -98,8 +103,9 @@
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-        <input type="file" name="objek[]" class="form-control" accept="image/*" multiple>
+        <input type="file" name="objek[]" class="form-control" accept="image/*" multiple id="inputObjek">
         <small class="form-text text-muted">Unggah lebih dari satu file dengan menekan CTRL (atau CMD di Mac). Kosongkan jika tidak ingin mengganti.</small>
+        <div id="previewObjek" class="mt-2"></div>
     </div>
 </div>
 
@@ -110,3 +116,33 @@
 </div>
 
 <?= form_close() ?>
+
+<script>
+    function previewImages(input, previewContainerId) {
+        const previewContainer = document.getElementById(previewContainerId);
+        previewContainer.innerHTML = '';
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('img-thumbnail', 'mr-2', 'mb-2');
+                        img.style.maxWidth = '150px';
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    }
+
+    document.getElementById('inputSurat').addEventListener('change', function() {
+        previewImages(this, 'previewSurat');
+    });
+
+    document.getElementById('inputObjek').addEventListener('change', function() {
+        previewImages(this, 'previewObjek');
+    });
+</script>
