@@ -74,14 +74,14 @@
 <div class="form-group row">
     <label class="col-3">Foto Surat</label>
     <div class="col-9">
-        <?php if (!empty($surat)): ?>
+        <?php if (!empty($fotoSurat)): ?>
             <div class="mb-2">
                 <p>Foto Surat yang Tersedia:</p>
-                <?php foreach ($surat as $file): ?>
+                <?php foreach ($fotoSurat as $file): ?>
                     <?php if (pathinfo($file['filefoto'], PATHINFO_EXTENSION) == 'pdf'): ?>
-                        <a href="<?= base_url('uploads/wakaf/' . $file['filefoto']) ?>" target="_blank" class="btn btn-sm btn-outline-primary mr-2 mb-2">Lihat PDF</a>
+                        <a href="<?= base_url('public/uploads/wakaf/' . $file['filefoto']) ?>" target="_blank" class="btn btn-sm btn-outline-primary mr-2 mb-2">Lihat PDF</a>
                     <?php else: ?>
-                        <img src="<?= base_url('uploads/wakaf/' . $file['filefoto']) ?>" alt="Surat" class="img-thumbnail" style="max-width: 150px; margin-right: 10px;">
+                        <img src="<?= base_url('public/uploads/wakaf/' . $file['filefoto']) ?>" alt="Surat" class="img-thumbnail" style="max-width: 150px; margin-right: 10px;">
                     <?php endif; ?>
                 <?php endforeach; ?>
             </div>
@@ -95,11 +95,11 @@
 <div class="form-group row">
     <label class="col-3">Foto Objek</label>
     <div class="col-9">
-        <?php if (!empty($objek)): ?>
+        <?php if (!empty($fotoObjek)): ?>
             <div class="mb-2">
                 <p>Foto Objek yang Tersedia:</p>
-                <?php foreach ($objek as $file): ?>
-                    <img src="<?= base_url('uploads/wakaf/' . $file['filefoto']) ?>" alt="Objek" class="img-thumbnail" style="max-width: 150px; margin-right: 10px;">
+                <?php foreach ($fotoObjek as $file): ?>
+                    <img src="<?= base_url('public/uploads/wakaf/' . $file['filefoto']) ?>" alt="Objek" class="img-thumbnail" style="max-width: 150px; margin-right: 10px;">
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>

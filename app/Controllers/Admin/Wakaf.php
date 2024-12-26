@@ -139,22 +139,30 @@ class Wakaf extends BaseController
 
     // Menampilkan form untuk mengedit wakaf
     public function edit($idwakaf)
-    {
-        checklogin();  // Pastikan pengguna sudah login
-        $m_wakaf = new WakafModel();
-        $wakaf   = $m_wakaf->find($idwakaf);  // Mengambil data wakaf berdasarkan ID
+{
+    checklogin();  // Pastikan pengguna sudah login
+    $m_wakaf = new WakafModel();
+    $m_fotowakaf = new FotowakafModel();
 
-        if (!$wakaf) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Wakaf dengan ID ' . $idwakaf . ' tidak ditemukan');
-        }
-
-        $data = [
-            'title'   => 'Edit Wakaf',
-            'wakaf'   => $wakaf,  // Data wakaf untuk diubah
-            'content' => 'admin/wakaf/edit',  // View untuk form edit wakaf
-        ];
-        echo view('admin/layout/wrapper', $data);
+    // Ambil data wakaf berdasarkan ID
+    $wakaf = $m_wakaf->find($idwakaf);
+    if (!$wakaf) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Wakaf dengan ID ' . $idwakaf . ' tidak ditemukan');
     }
+
+    // Ambil foto terkait wakaf (foto surat dan objek)
+    $fotoSurat = $m_fotowakaf->where(['idobject' => $wakaf['idobject'], 'jenis' => 'surat'])->findAll();
+    $fotoObjek = $m_fotowakaf->where(['idobject' => $wakaf['idobject'], 'jenis' => 'objek'])->findAll();
+
+    $data = [
+        'title'     => 'Edit Wakaf',
+        'wakaf'     => $wakaf,
+        'fotoSurat' => $fotoSurat,
+        'fotoObjek' => $fotoObjek,
+        'content'   => 'admin/wakaf/edit',
+    ];
+    echo view('admin/layout/wrapper', $data);
+}
 
     // Menyimpan perubahan data wakaf
     public function update($idwakaf)

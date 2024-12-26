@@ -25,7 +25,7 @@
 <div class="form-group row">
     <label class="col-3">Deskripsi</label>
     <div class="col-9">
-        <textarea name="deskripsi" class="form-control" placeholder="Deskripsi Program" required></textarea>
+        <textarea name="deskripsi" class="form-control konten"></textarea>
     </div>
 </div>
 
