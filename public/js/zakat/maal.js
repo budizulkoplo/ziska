@@ -34,11 +34,9 @@ function hitungZakatMaal() {
     }
     
 }
-    function bayarZakatMaal() {
-        const base = '<?=base_url()?>'; 
-        const bayar = `${base}/admin/transaksi/zakat`; 
-        window.location.href = `${bayar}`;
-    }
+
+
+
 
 
 

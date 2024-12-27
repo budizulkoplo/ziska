@@ -1,6 +1,6 @@
 <div class="container mt-4">
     <h3 class="text-center">Zakat Harta (Maal)</h3>
-    <form id="maalForm">
+    <form id="zakatForm">
     <div id="zakatMaalForm">
                     <!-- Form Zakat Maal -->
                     <h4>Zakat Harta (Maal)</h4>
@@ -94,7 +94,8 @@
                         <label class="col-sm-6 col-form-label">i. Jumlah Zakat atas Simpanan yang Wajib Dibayarkan Per Tahun (2.5% x h)</label>
                         <div class="col-sm-6 input-group">
                             <span class="input-group-text">Rp</span>
-                            <input type="number" class="form-control" id="jumlahZakat" value="0" readonly>
+                            <input type="number" name="jumlahZakat" class="form-control" id="jumlahZakat" value="0" readonly>
+                            <input type="hidden" name="jenis" class="form-control" id="jenis" value="maal">
                         </div>
                     </div>
                 </div>
@@ -104,7 +105,7 @@
             <button type="button" class="btn btn-success w-100 mt-4" onclick="hitungZakatMaal()">Hitung Zakat</button>
         </div>
         <div class="col-sm-6">
-            <button type="button" class="btn btn-outline-primary w-100 mt-4" onclick="bayarZakatMaal()"><i class="nav-icon fas fa-calculator"></i> Bayar Zakat</button>
+            <button type="button" class="btn btn-outline-primary w-100 mt-4" onclick="bayarZakat(event)"><i class="nav-icon fas fa-calculator"></i> Bayar Zakat</button>
         </div>
     </div>
 </div>

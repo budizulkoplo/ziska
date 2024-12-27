@@ -56,6 +56,19 @@
             zakatContainer.innerHTML = '<p class="text-danger">Terjadi kesalahan saat memuat form zakat.</p>';
         }
     }
+
+    function bayarZakat(event) {
+    event.preventDefault(); 
+    const baseUrl = '<?= base_url() ?>';
+
+    const form = document.getElementById('zakatForm');
+    const jumlah = form.querySelector('input[name="jumlahZakat"]').value;
+    const jenis = form.querySelector('input[name="jenis"]').value;
+
+    const redirectUrl = `${baseUrl}/admin/transaksi/zakat?jumlah=${jumlah}&jenis=${jenis}`;
+    window.location.href = redirectUrl;
+    }
+
 </script>
 
 
