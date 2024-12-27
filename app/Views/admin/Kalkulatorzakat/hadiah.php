@@ -1,6 +1,6 @@
 <div class="container mt-4">
     <h3 class="text-center">Zakat Hadiah</h3>
-    <form id="hadiahForm">
+    <form id="zakatForm">
         <div id="zakatHadiahForm">
             <h4>Form Zakat Hadiah</h4>
 
@@ -50,7 +50,7 @@
                 <div class="col-sm-6 input-group">
                     <span class="input-group-text">Rp</span>
                     <input type="number" name="jumlahZakat" class="form-control" id="jumlahZakat" value="0" readonly>
-                    <input type="hidden" name="jenis" class="form-control" id="jenis" value="hadiah">
+                    <input type="hidden" name="jenis" class="form-control" id="jenis" value="Hadiah">
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
             <button type="button" class="btn btn-success w-100 mt-4" onclick="hitungZakatHadiah()">Hitung Zakat</button>
         </div>
         <div class="col-sm-6">
-            <button type="button" class="btn btn-outline-primary w-100 mt-4" onclick="bayarZakat(event)"><i class="nav-icon fas fa-calculator"></i> Bayar Zakat</button>
+            <button type="button" class="btn btn-outline-primary w-100 mt-4" id="bayarZakatButton" onclick="bayarZakat(event)" disabled><i class="nav-icon fas fa-calculator"></i> Bayar Zakat</button>
         </div>
     </div>
 </div>

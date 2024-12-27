@@ -17,5 +17,8 @@ function hitungZakatHadiah() {
 
     // Update nilai ke form
     document.getElementById("totalDiterima").value = totalDiterima.toFixed(2);
-    document.getElementById("zakatHadiah").value = zakat.toFixed(2);
+    document.getElementById("jumlahZakat").value = zakat.toFixed(2);
+
+    const bayarZakatButton = document.getElementById("bayarZakatButton");
+    bayarZakatButton.disabled = false;
 }

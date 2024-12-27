@@ -1,3 +1,10 @@
+<?php
+$session = \Config\Services::session();
+$jumlah = isset($_GET['jumlah']) ? htmlspecialchars($_GET['jumlah']) : ''; 
+$jenis = isset($_GET['jenis']) ? htmlspecialchars($_GET['jenis']) : ''; 
+$muzaki = $session->get('nama');
+?>
+
 <div class="container">
     <h3>Tambah Transaksi</h3>
 
@@ -6,19 +13,17 @@
 
     <!-- Input Tipetransaksi -->
     <div class="form-group row">
-        <label for="tipetransaksi" class="col-3 col-form-label">Tipe Transaksi</label>
+        <label for="tipetransaksi" class="col-3 col-form-label">Transaksi</label>
         <div class="col-9">
-            <select id="tipetransaksi" name="tipetransaksi" class="form-control" required>
-                <option value="">Pilih Tipe Transaksi</option>
-                <?php foreach ($kodetransaksi as $kode): ?>
-                    <option value="<?= esc($kode['kodetransaksi']); ?>" <?= set_select('tipetransaksi', esc($kode['kodetransaksi'])); ?>>
-                        <?= esc($kode['kodetransaksi']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+            <input type="text" id="tipetransaksi" name="tipetransaksi" class="form-control" value="Zakat" readonly>
         </div>
     </div>
-
+    <div class="form-group row">
+        <label for="tipetransaksi" class="col-3 col-form-label">Zakat</label>
+        <div class="col-9">
+            <input type="text" id="tipetransaksi" name="tipetransaksi" class="form-control" value="<?= $jenis ?>" readonly>
+        </div>
+    </div>
     <!-- Input Tanggal Transaksi -->
     <div class="form-group row">
         <label for="tgltransaksi" class="col-3 col-form-label">Tanggal Transaksi</label>
@@ -31,15 +36,16 @@
     <div class="form-group row">
         <label for="muzaki" class="col-3 col-form-label">Muzaki</label>
         <div class="col-9">
-            <input type="text" id="muzaki" name="muzaki" class="form-control" placeholder="Nama Muzaki" value="<?= set_value('muzaki') ?>" required>
+            <input type="text" id="muzaki" name="muzaki" class="form-control" placeholder="Nama Muzaki" value="<?= $muzaki ?>" readonly>
         </div>
     </div>
 
     <!-- Input Nominal -->
     <div class="form-group row">
         <label for="nominal" class="col-3 col-form-label">Nominal</label>
-        <div class="col-9">
-            <input type="number" step="0.01" id="nominal" name="nominal" class="form-control" placeholder="Nominal" value="<?= set_value('nominal') ?>" required>
+        <div class="col-sm-9 input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="number" class="form-control" id="nominal" name="nominal" value="<?= number_format($jumlah, 2, ',', '.') ?>" readonly="">
         </div>
     </div>
 
@@ -54,8 +60,10 @@
     <!-- Submit Button -->
     <div class="form-group row">
         <div class="col-9 offset-3">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan Transaksi</button>
-            <a href="<?= base_url('admin/transaksi') ?>" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Kembali</a>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Bayar Zakat</button>
+            <a href="javascript:void(0)" onclick="window.history.back()" class="btn btn-secondary">
+                <i class="fa fa-arrow-left"></i> Kembali
+            </a>
         </div>
     </div>
 

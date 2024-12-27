@@ -32,6 +32,9 @@ function hitungZakatMaal() {
 
         jumlahZakat.value = 0;
     }
+
+    const bayarZakatButton = document.getElementById("bayarZakatButton");
+    bayarZakatButton.disabled = false;
     
 }
 

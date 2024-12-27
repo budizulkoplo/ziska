@@ -6,5 +6,8 @@ function hitungZakatPertanian() {
     const hasilBersih = hasilPanen - biayaProduksi;
     const zakatPertanian = hasilBersih * (jenisIrigasi / 100);
 
-    document.getElementById('zakatPertanian').value = zakatPertanian.toFixed(2);
+    document.getElementById('jumlahZakat').value = zakatPertanian.toFixed(2);
+
+    const bayarZakatButton = document.getElementById("bayarZakatButton");
+    bayarZakatButton.disabled = false;
 }

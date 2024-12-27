@@ -4,6 +4,7 @@ use App\Models\Konfigurasi_model;
 $session = \Config\Services::session();
 $konfigurasi  = new Konfigurasi_model;
 $site         = $konfigurasi->listing();
+$username=$session->get('nama');
 ?>
 <style type="text/css" media="screen">
   .nav-item a:hover {
