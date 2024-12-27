@@ -45,7 +45,9 @@ $muzaki = $session->get('nama');
         <label for="nominal" class="col-3 col-form-label">Nominal</label>
         <div class="col-sm-9 input-group">
             <span class="input-group-text">Rp</span>
-            <input type="number" class="form-control" id="nominal" name="nominal" value="<?= number_format($jumlah, 2, ',', '.') ?>" readonly="">
+            
+            <input type="number" class="form-control" id="nominal" name="nominal" value="<?= $jumlah ?>" readonly>
+
         </div>
     </div>
 
