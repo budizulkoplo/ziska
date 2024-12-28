@@ -40,20 +40,29 @@ class Transaksi extends BaseController
     }
 
     public function zakat()
-    {
-        checklogin();  // Pastikan pengguna sudah login
-        $m_kodetransaksi = new KodetransaksiModel();
-        
-        // Ambil hanya kodetransaksi dengan cashflow 'Pemasukan'
-        $kodetransaksi = $m_kodetransaksi->where('cashflow', 'Pemasukan')->findAll(); 
+{
+    checklogin();  // Pastikan pengguna sudah login
+    $m_kodetransaksi = new KodetransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
 
-        $data = [
-            'title'       => 'Bayar Zakat',
-            'kodetransaksi' => $kodetransaksi, // Mengirimkan data kodetransaksi yang telah difilter ke view
-            'content'     => 'admin/transaksi/zakat',  // View untuk form tambah transaksi
-        ];
-        echo view('admin/layout/wrapper', $data);
-    }
+    // Ambil idrekening dari tabel m_kodetransaksi untuk kodetransaksi = 'Zakat'
+    $kodetransaksi = $m_kodetransaksi->where('kodetransaksi', 'Zakat')->findAll();
+
+    $idRekeningList = array_column($kodetransaksi, 'idrekening');
+
+    // Ambil data rekening yang sesuai dengan idrekening dari kodetransaksi
+    $rekening = $m_rekening->whereIn('idrek', $idRekeningList)->findAll();
+
+    $data = [
+        'title'       => 'Bayar Zakat',
+        'kodetransaksi' => $kodetransaksi, // Data kode transaksi
+        'rekening'    => $rekening,       // Rekening yang terkait dengan Zakat
+        'content'     => 'admin/transaksi/zakat',  // View untuk form tambah transaksi
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
 
 
     // Menyimpan data transaksi baru
