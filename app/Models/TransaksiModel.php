@@ -11,13 +11,17 @@ class TransaksiModel extends Model
     protected $useAutoIncrement = true;  // Gunakan auto increment untuk idtransaksi
     protected $returnType       = 'array';  // Kembalikan hasil sebagai array
     protected $useSoftDeletes   = false;  // Tidak menggunakan soft delete
-    protected $allowedFields    = [
+    protected $allowedFields = [
         'tipetransaksi',
         'tgltransaksi',
         'muzaki',
         'nominal',
         'keterangan',
-    ];  // Kolom-kolom yang boleh diisi
+        'zakat',      // Tambahan field zakat
+        'program',    // Tambahan field program
+        'donasi',     // Tambahan field donasi
+        'idrek',      // Tambahan field idrek
+    ];
 
     // Validasi untuk input
     protected $validationRules = [
