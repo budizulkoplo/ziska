@@ -150,21 +150,100 @@ class Transaksi extends BaseController
         return redirect()->to(base_url('admin/transaksi'));
     }
 
+    public function bayarzakat()
+{
+    checklogin(); // Pastikan pengguna sudah login
+
+    // Model yang dibutuhkan
+    $m_transaksi = new \App\Models\TransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
+    $m_log = new \App\Models\TransactionLogModel();
+
+    // Validasi input
+    if (!$this->validate([
+        'tgltransaksi' => 'required|valid_date',
+        'idrek'        => 'required',
+        'nominal'      => 'required|decimal|greater_than[0]',
+    ])) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+    }
+
+    $idrek = $this->request->getPost('idrek');
+    $nominal = $this->request->getPost('nominal');
+
+    // Ambil saldo awal dari rekening
+    $rekening = $m_rekening->find($idrek);
+    if (!$rekening) {
+        return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
+    }
+
+    $saldoawal = $rekening['saldoakhir'];
+    $saldoakhir = $saldoawal + $nominal; // Karena zakat adalah pemasukan
+
+    // Simpan transaksi
+    $dataTransaksi = [
+        'tipetransaksi' => 'Zakat',
+        'tgltransaksi'  => $this->request->getPost('tgltransaksi'),
+        'muzaki'        => $this->session->get('nama'),
+        'nominal'       => $nominal,
+        'keterangan'    => $this->request->getPost('keterangan'),
+        'zakat'         => $this->request->getPost('jeniszakat'),
+        'idrek'         => $idrek,
+    ];
+    $idtransaksi = $m_transaksi->insert($dataTransaksi);
+
+    // Simpan log transaksi
+    $dataLog = [
+        'idtransaksi' => $idtransaksi,
+        'idrek'       => $idrek,
+        'nominal'     => $nominal,
+        'saldoawal'   => $saldoawal,
+        'saldoakhir'  => $saldoakhir,
+    ];
+    $m_log->insert($dataLog);
+
+    // Update saldo rekening
+    $m_rekening->update($idrek, ['saldoakhir' => $saldoakhir]);
+
+    $this->session->setFlashdata('sukses', 'Pembayaran zakat berhasil disimpan.');
+    return redirect()->to(base_url('admin/transaksi'));
+}
+
+
+
     // Menghapus transaksi
     public function delete($idtransaksi)
-    {
-        checklogin();  // Pastikan pengguna sudah login
-        $m_transaksi = new TransaksiModel();
-        $transaksi   = $m_transaksi->find($idtransaksi);  // Mengambil data transaksi berdasarkan ID
+{
+    checklogin(); // Pastikan pengguna sudah login
+    $m_transaksi = new \App\Models\TransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
+    $m_log = new \App\Models\TransactionLogModel();
 
-        if (!$transaksi) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Transaksi dengan ID ' . $idtransaksi . ' tidak ditemukan');
-        }
-
-        $m_transaksi->delete($idtransaksi);  // Menghapus data transaksi berdasarkan ID
-
-        $this->session->setFlashdata('sukses', 'Transaksi berhasil dihapus');
-
-        return redirect()->to(base_url('admin/transaksi'));
+    $transaksi = $m_transaksi->find($idtransaksi);
+    if (!$transaksi) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Transaksi tidak ditemukan.');
     }
+
+    // Ambil log transaksi
+    $log = $m_log->where('idtransaksi', $idtransaksi)->first();
+    if (!$log) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Log transaksi tidak ditemukan.');
+    }
+
+    $idrek = $log['idrek'];
+    $saldoakhir_sebelum = $log['saldoawal'];
+
+    // Update saldo rekening
+    $m_rekening->update($idrek, ['saldoakhir' => $saldoakhir_sebelum]);
+
+    // Hapus log transaksi
+    $m_log->delete($log['id']);
+
+    // Hapus transaksi
+    $m_transaksi->delete($idtransaksi);
+
+    $this->session->setFlashdata('sukses', 'Transaksi berhasil dihapus.');
+    return redirect()->to(base_url('admin/transaksi'));
+}
+
 }
