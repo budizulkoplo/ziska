@@ -67,36 +67,77 @@ class Transaksi extends BaseController
 
     // Menyimpan data transaksi baru
     public function store()
-    {
-        checklogin();  // Pastikan pengguna sudah login
-        $m_transaksi = new TransaksiModel();
+{
+    checklogin();  // Pastikan pengguna sudah login
 
-        // Validasi input
-        if (!$this->validate([
-            'tipetransaksi' => 'required|string|max_length[50]',
-            'tgltransaksi'  => 'required|valid_date',
-            'muzaki'        => 'required|string|max_length[100]',
-            'nominal'       => 'required|decimal',
-            'keterangan'    => 'permit_empty|string|max_length[255]',
-        ])) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
+    $m_transaksi = new TransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
+    $m_log = new \App\Models\TransactionLogModel();
+    $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
 
-        // Menyimpan data transaksi
-        $data = [
-            'tipetransaksi' => $this->request->getPost('tipetransaksi'),
-            'tgltransaksi'  => $this->request->getPost('tgltransaksi'),
-            'muzaki'        => $this->request->getPost('muzaki'),
-            'nominal'       => $this->request->getPost('nominal'),
-            'keterangan'    => $this->request->getPost('keterangan'),
-        ];
-
-        $m_transaksi->insert($data);
-
-        $this->session->setFlashdata('sukses', 'Transaksi berhasil ditambahkan');
-
-        return redirect()->to(base_url('admin/transaksi'));
+    // Validasi input
+    if (!$this->validate([
+        'tipetransaksi' => 'required|string|max_length[50]',
+        'tgltransaksi'  => 'required|valid_date',
+        'muzaki'        => 'required|string|max_length[100]',
+        'nominal'       => 'required|decimal',
+        'keterangan'    => 'permit_empty|string|max_length[255]',
+    ])) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
+
+    $tipetransaksi = $this->request->getPost('tipetransaksi');
+    $nominal = $this->request->getPost('nominal');
+
+    // Ambil data kode transaksi untuk mendapatkan idrek dan cashflow
+    $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', $tipetransaksi)->first();
+    if (!$kodeTransaksi) {
+        return redirect()->back()->with('error', 'Kode transaksi tidak ditemukan.');
+    }
+
+    $idrek = $kodeTransaksi['idrekening'];
+    $cashflow = $kodeTransaksi['cashflow'];
+
+    // Ambil data rekening untuk validasi
+    $rekening = $m_rekening->find($idrek);
+    if (!$rekening) {
+        return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
+    }
+
+    // Perhitungan saldo
+    $saldoAwal = $rekening['saldoakhir'];
+    $saldoAkhir = ($cashflow === 'Pemasukan') ? $saldoAwal + $nominal : $saldoAwal - $nominal;
+
+    // Menyimpan data transaksi
+    $dataTransaksi = [
+        'tipetransaksi' => $tipetransaksi,
+        'tgltransaksi'  => $this->request->getPost('tgltransaksi'),
+        'muzaki'        => $this->request->getPost('muzaki'),
+        'nominal'       => $nominal,
+        'keterangan'    => $this->request->getPost('keterangan'),
+        'idrek'         => $idrek,
+        'cashflow'      => $cashflow,
+        'status'        => 'sukses', // Langsung sukses karena input oleh admin
+    ];
+    $idtransaksi = $m_transaksi->insert($dataTransaksi);
+
+    // Perbarui saldo akhir rekening
+    $m_rekening->update($idrek, ['saldoakhir' => $saldoAkhir]);
+
+    // Simpan log transaksi
+    $dataLog = [
+        'idtransaksi' => $idtransaksi,
+        'idrek'       => $idrek,
+        'nominal'     => $nominal,
+        'saldoawal'   => $saldoAwal,
+        'saldoakhir'  => $saldoAkhir,
+        'cashflow'      => $cashflow,
+    ];
+    $m_log->insert($dataLog);
+
+    $this->session->setFlashdata('sukses', 'Transaksi berhasil ditambahkan.');
+    return redirect()->to(base_url('admin/transaksi'));
+}
 
     // Menampilkan form untuk mengedit transaksi
     public function edit($idtransaksi)
@@ -169,7 +210,7 @@ class Transaksi extends BaseController
     // Model yang dibutuhkan
     $m_transaksi = new \App\Models\TransaksiModel();
     $m_rekening = new \App\Models\RekeningModel();
-    $m_log = new \App\Models\TransactionLogModel();
+    $m_kodetransaksi = new \App\Models\KodeTransaksiModel(); // Model untuk kode transaksi
 
     // Validasi input
     if (!$this->validate([
@@ -189,6 +230,13 @@ class Transaksi extends BaseController
         return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
     }
 
+    // Ambil data cashflow dari tabel m_kodetransaksi
+    $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', 'Zakat')->first(); // Sesuaikan 'Zakat' sebagai tipe transaksi
+    if (!$kodeTransaksi) {
+        return redirect()->back()->with('error', 'Kode transaksi tidak ditemukan.');
+    }
+    $cashflow = $kodeTransaksi['cashflow']; // Ambil nilai cashflow
+
     // Simpan transaksi dengan status 'pending'
     $dataTransaksi = [
         'tipetransaksi' => 'Zakat',
@@ -198,6 +246,7 @@ class Transaksi extends BaseController
         'keterangan'    => $this->request->getPost('keterangan'),
         'zakat'         => $this->request->getPost('jeniszakat'),
         'idrek'         => $idrek,
+        'cashflow'      => $cashflow, // Simpan cashflow
         'status'        => 'pending', // Status awal
     ];
     $idtransaksi = $m_transaksi->insert($dataTransaksi);
@@ -205,6 +254,7 @@ class Transaksi extends BaseController
     $this->session->setFlashdata('sukses', 'Pembayaran zakat berhasil disimpan dengan status pending.');
     return redirect()->to(base_url('admin/transaksi'));
 }
+
 
 public function updateStatusTransaksi($idtransaksi)
 {

@@ -22,6 +22,7 @@ class TransaksiModel extends Model
         'donasi',    
         'idrek',      
         'status',  
+        'cashflow',
     ];
 
     // Validasi untuk input

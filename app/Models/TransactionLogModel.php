@@ -15,6 +15,7 @@ class TransactionLogModel extends Model
         'nominal',
         'saldoawal',
         'saldoakhir',
+        'cashflow',
     ];
 
     protected $useTimestamps = false;
