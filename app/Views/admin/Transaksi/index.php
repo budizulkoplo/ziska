@@ -12,7 +12,7 @@
             <th width="20%">Tanggal Transaksi</th>
             <th width="20%">Muzaki</th>
             <th width="15%">Nominal</th>
-            <th width="15%">Keterangan</th>
+            <th width="15%">Status</th>
             <th width="20%">Aksi</th>
         </tr>
     </thead>
@@ -24,7 +24,10 @@
             <td><?= esc($item['tgltransaksi']) ?></td>
             <td><?= esc($item['muzaki']) ?></td>
             <td>Rp. <?= number_format($item['nominal'], 2) ?></td>
-            <td><?= esc($item['keterangan']) ?></td>
+            <td><span class="badge <?= ($item['status'] === 'sukses') ? 'bg-success' : 'bg-danger' ?>">
+                        <?= esc($item['status']) ?>
+                    </span></td>
+            
             <td>
                 <a href="<?= base_url('admin/transaksi/edit/' . $item['idtransaksi']) ?>" class="btn btn-success btn-sm">
                     <i class="fa fa-edit"></i> Edit

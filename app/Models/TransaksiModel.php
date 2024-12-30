@@ -6,21 +6,22 @@ use CodeIgniter\Model;
 
 class TransaksiModel extends Model
 {
-    protected $table            = 'transaksi';  // Nama tabel
-    protected $primaryKey       = 'idtransaksi';  // Kolom primary key
-    protected $useAutoIncrement = true;  // Gunakan auto increment untuk idtransaksi
-    protected $returnType       = 'array';  // Kembalikan hasil sebagai array
-    protected $useSoftDeletes   = false;  // Tidak menggunakan soft delete
+    protected $table            = 'transaksi';  
+    protected $primaryKey       = 'idtransaksi';  
+    protected $useAutoIncrement = true;  
+    protected $returnType       = 'array';  
+    protected $useSoftDeletes   = false; 
     protected $allowedFields = [
         'tipetransaksi',
         'tgltransaksi',
         'muzaki',
         'nominal',
         'keterangan',
-        'zakat',      // Tambahan field zakat
-        'program',    // Tambahan field program
-        'donasi',     // Tambahan field donasi
-        'idrek',      // Tambahan field idrek
+        'zakat',     
+        'program',    
+        'donasi',    
+        'idrek',      
+        'status',  
     ];
 
     // Validasi untuk input
