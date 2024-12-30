@@ -19,13 +19,20 @@
         </div>
     </div>
 
-    <!-- Input Tanggal Transaksi -->
-    <div class="form-group row">
-        <label for="tgltransaksi" class="col-3 col-form-label">Tanggal Transaksi</label>
-        <div class="col-9">
-            <input type="date" id="tgltransaksi" name="tgltransaksi" class="form-control" value="<?= set_value('tgltransaksi', $transaksi['tgltransaksi']) ?>" required>
-        </div>
+<!-- Input Tanggal Transaksi -->
+<div class="form-group row">
+    <label for="tgltransaksi" class="col-3 col-form-label">Tanggal Transaksi</label>
+    <div class="col-9">
+        <input 
+            type="date" 
+            id="tgltransaksi" 
+            name="tgltransaksi" 
+            class="form-control" 
+            value="<?= set_value('tgltransaksi', date('Y-m-d', strtotime($transaksi['tgltransaksi']))) ?>" 
+            required>
     </div>
+</div>
+
 
     <!-- Input Muzaki -->
     <div class="form-group row">

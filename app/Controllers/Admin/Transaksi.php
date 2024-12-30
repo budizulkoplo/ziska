@@ -214,10 +214,11 @@ public function updateStatusTransaksi($idtransaksi)
     $m_transaksi = new \App\Models\TransaksiModel();
     $m_rekening = new \App\Models\RekeningModel();
     $m_log = new \App\Models\TransactionLogModel();
+    $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
 
-    // Validasi input
-    $status = $this->request->getPost('status');
-    if (!in_array($status, ['pending', 'verifikasi', 'sukses'])) {
+    // Validasi input status
+    $statusBaru = $this->request->getPost('status');
+    if (!in_array($statusBaru, ['pending', 'verifikasi', 'sukses'])) {
         return redirect()->back()->with('error', 'Status tidak valid.');
     }
 
@@ -227,16 +228,57 @@ public function updateStatusTransaksi($idtransaksi)
         return redirect()->back()->with('error', 'Transaksi tidak ditemukan.');
     }
 
-    // Jika status diperbarui menjadi 'sukses', lakukan perhitungan saldo rekening
-    if ($status === 'sukses') {
-        $idrek = $transaksi['idrek'];
-        $rekening = $m_rekening->find($idrek);
-        if (!$rekening) {
-            return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
+    $statusLama = $transaksi['status']; // Status sebelumnya
+    $tipetransaksi = $transaksi['tipetransaksi'];
+
+    // Ambil informasi cashflow berdasarkan tipe transaksi
+    $kodetransaksi = $m_kodetransaksi->where('kodetransaksi', $tipetransaksi)->first();
+    if (!$kodetransaksi) {
+        return redirect()->back()->with('error', 'Tipe transaksi tidak valid.');
+    }
+
+    $cashflow = $kodetransaksi['cashflow']; // Bisa 'Pemasukan' atau 'Pengeluaran'
+
+    // Jika status tidak berubah, tidak perlu melakukan apa-apa
+    if ($statusBaru === $statusLama) {
+        return redirect()->back()->with('info', 'Status tidak berubah.');
+    }
+
+    // Ambil data rekening jika diperlukan
+    $idrek = $transaksi['idrek'];
+    $rekening = $m_rekening->find($idrek);
+    if (!$rekening) {
+        return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
+    }
+
+    $nominal = $transaksi['nominal'];
+
+    // Perhitungan saldo berdasarkan perubahan status
+    if ($statusLama === 'sukses' && $statusBaru !== 'sukses') {
+        // Status berubah dari sukses ke selain sukses: batalkan perhitungan saldo
+        $saldoakhir = $rekening['saldoakhir'];
+
+        if ($cashflow === 'Pemasukan') {
+            $saldoakhir -= $nominal; // Kurangi saldo untuk pembatalan pemasukan
+        } elseif ($cashflow === 'Pengeluaran') {
+            $saldoakhir += $nominal; // Tambah saldo untuk pembatalan pengeluaran
         }
 
+        // Update saldo rekening
+        $m_rekening->update($idrek, ['saldoakhir' => $saldoakhir]);
+
+        // Hapus log transaksi
+        $m_log->where('idtransaksi', $idtransaksi)->delete();
+    } elseif ($statusLama !== 'sukses' && $statusBaru === 'sukses') {
+        // Status berubah menjadi sukses: lakukan perhitungan saldo
         $saldoawal = $rekening['saldoakhir'];
-        $saldoakhir = $saldoawal + $transaksi['nominal'];
+        $saldoakhir = $saldoawal;
+
+        if ($cashflow === 'Pemasukan') {
+            $saldoakhir += $nominal; // Tambah saldo untuk pemasukan
+        } elseif ($cashflow === 'Pengeluaran') {
+            $saldoakhir -= $nominal; // Kurangi saldo untuk pengeluaran
+        }
 
         // Update saldo rekening
         $m_rekening->update($idrek, ['saldoakhir' => $saldoakhir]);
@@ -245,19 +287,22 @@ public function updateStatusTransaksi($idtransaksi)
         $dataLog = [
             'idtransaksi' => $idtransaksi,
             'idrek'       => $idrek,
-            'nominal'     => $transaksi['nominal'],
+            'nominal'     => $nominal,
             'saldoawal'   => $saldoawal,
             'saldoakhir'  => $saldoakhir,
+            'cashflow'    => $cashflow,
         ];
         $m_log->insert($dataLog);
     }
 
     // Update status transaksi
-    $m_transaksi->update($idtransaksi, ['status' => $status]);
+    $m_transaksi->update($idtransaksi, ['status' => $statusBaru]);
 
     $this->session->setFlashdata('sukses', 'Status transaksi berhasil diperbarui.');
     return redirect()->to(base_url('admin/transaksi'));
 }
+
+
 
 
 public function delete($idtransaksi)
