@@ -58,6 +58,21 @@
             <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan"><?= set_value('keterangan', $transaksi['keterangan']) ?></textarea>
         </div>
     </div>
+    <!-- Bagian untuk menampilkan bukti bayar yang sudah diupload -->
+    <div class="form-group row">
+        <label for="buktibayar" class="col-3 col-form-label">Bukti Pembayaran</label>
+        <div class="col-9">
+            <!-- Menampilkan gambar bukti bayar jika sudah ada -->
+            <?php if (!empty($transaksi['buktibayar'])): ?>
+                <div>
+                    <img src="<?= base_url('public/uploads/buktibayar/' . $transaksi['buktibayar']) ?>" alt="Bukti Pembayaran" class="img-thumbnail" style="max-width: 300px;">
+                    <p>File bukti bayar sudah diunggah.</p>
+                </div>
+            <?php else: ?>
+                <input type="file" class="form-control" id="buktibayar" name="buktibayar" accept="image/*" required>
+            <?php endif; ?>
+        </div>
+    </div>
 
     <!-- Input Status -->
     <div class="form-group row">

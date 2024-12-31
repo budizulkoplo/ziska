@@ -23,6 +23,7 @@ class TransaksiModel extends Model
         'idrek',      
         'status',  
         'cashflow',
+        'buktibayar',
     ];
 
     // Validasi untuk input

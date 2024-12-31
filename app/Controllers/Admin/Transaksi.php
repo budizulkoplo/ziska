@@ -413,21 +413,28 @@ public function konfirmasi($idtransaksi)
     // Model yang dibutuhkan
     $m_transaksi = new \App\Models\TransaksiModel();
     $m_rekening = new \App\Models\RekeningModel();
+    $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
 
-    // Ambil data transaksi berdasarkan ID
-    $transaksi = $m_transaksi->find($idtransaksi);
-    if (!$transaksi || $transaksi['status'] !== 'pending') {
-        return redirect()->back()->with('error', 'Transaksi tidak ditemukan atau status sudah selesai.');
+    $transaksi = $m_transaksi
+        ->select('transaksi.*, muzaki.nama AS nama_muzaki') // Pilih field tambahan dari tabel muzaki
+        ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left') // Join dengan tabel muzaki
+        ->where('transaksi.idtransaksi', $idtransaksi)
+        ->first();
+
+    // Ambil data rekening jika diperlukan
+    $idrek = $transaksi['idrek'];
+    $rekening = $m_rekening->find($idrek);
+
+    // Ambil data kode transaksi
+    $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', 'Zakat')->first(); // Sesuaikan 'Zakat' sebagai tipe transaksi
+    if (!$kodeTransaksi) {
+        return redirect()->back()->with('error', 'Kode transaksi tidak ditemukan.');
     }
+    $cashflow = $kodeTransaksi['cashflow']; // Ambil nilai cashflow
 
-    // Ambil data rekening
-    $rekening = $m_rekening->find($transaksi['idrek']);
-    if (!$rekening) {
-        return redirect()->back()->with('error', 'Rekening tujuan tidak ditemukan.');
-    }
-
+    // Jika form dikirim dengan metode POST
     if ($this->request->getMethod() === 'post') {
-        // Validasi input
+        // Validasi input untuk file bukti bayar
         if (!$this->validate([
             'buktibayar' => 'uploaded[buktibayar]|max_size[buktibayar,2048]|ext_in[buktibayar,jpg,jpeg,png]',
         ])) {
@@ -437,31 +444,88 @@ public function konfirmasi($idtransaksi)
         // Proses unggah file bukti bayar
         $buktiBayar = $this->request->getFile('buktibayar');
         if ($buktiBayar->isValid() && !$buktiBayar->hasMoved()) {
-            $fileName = $buktiBayar->getRandomName();
-            $buktiBayar->move('uploads/buktibayar', $fileName);
+            $fileName = $buktiBayar->getRandomName(); // Nama file acak
+            $buktiBayar->move('uploads/buktibayar', $fileName); // Pindahkan file ke folder 'uploads/buktibayar'
 
             // Perbarui transaksi dengan bukti bayar
             $m_transaksi->update($idtransaksi, [
                 'buktibayar' => $fileName,
-                'status'     => 'menunggu_verifikasi', // Ubah status transaksi
+                'status'     => 'verifikasi', // Ubah status transaksi
             ]);
 
-            $this->session->setFlashdata('sukses', 'Bukti pembayaran berhasil diunggah dan menunggu verifikasi.');
+            session()->setFlashdata('sukses', 'Bukti pembayaran berhasil diunggah dan menunggu verifikasi.');
             return redirect()->to(base_url('admin/transaksi'));
         } else {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunggah bukti pembayaran.');
         }
     }
 
+    // Siapkan data untuk view
     $data = [
-        'title'       => 'Bayar Zakat',
-        'kodetransaksi' => $kodetransaksi, // Data kode transaksi
-        'rekening'    => $rekening,       // Rekening yang terkait dengan Zakat
-        'content'     => 'admin/transaksi/zakat',  // View untuk form tambah transaksi
+        'title'        => 'Konfirmasi Pembayaran',
+        'transaksi'    => $transaksi,  
+        'kodetransaksi'=> $kodeTransaksi['kodetransaksi'], // Data kode transaksi
+        'rekening'     => $rekening,       // Rekening yang terkait dengan Zakat
+        'content'      => 'admin/transaksi/konfirmasi',  // View untuk form tambah transaksi
     ];
 
-    echo view('admin/layout/wrapper', $data);
+    return view('admin/layout/wrapper', $data); // Pastikan menggunakan 'return' agar lebih sesuai dengan standar
 }
+
+public function simpankonfirmasi($idtransaksi)
+{
+    checklogin(); // Pastikan pengguna sudah login
+
+    // Model yang dibutuhkan
+    $m_transaksi = new \App\Models\TransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
+    $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
+
+    // Ambil data transaksi yang akan diperbarui
+    $transaksi = $m_transaksi->where('idtransaksi', $idtransaksi)->first();
+    if (!$transaksi) {
+        return redirect()->back()->with('error', 'Transaksi tidak ditemukan.');
+    }
+
+    // Validasi form
+    if ($this->request->getMethod() === 'post') {
+        // Validasi input untuk file bukti bayar
+        if (!$this->validate([
+            'buktibayar' => 'uploaded[buktibayar]|max_size[buktibayar,2048]|ext_in[buktibayar,jpg,jpeg,png]',
+        ])) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Proses unggah file bukti bayar
+        $buktiBayar = $this->request->getFile('buktibayar');
+        if ($buktiBayar->isValid() && !$buktiBayar->hasMoved()) {
+            $fileName = $buktiBayar->getRandomName(); // Nama file acak
+            $buktiBayar->move('uploads/buktibayar', $fileName); // Pindahkan file ke folder 'uploads/buktibayar'
+
+            // Update transaksi dengan bukti bayar
+            $m_transaksi->update($idtransaksi, [
+                'buktibayar' => $fileName,
+                'status'     => 'verifikasi', // Ubah status transaksi
+            ]);
+
+            session()->setFlashdata('sukses', 'Bukti pembayaran berhasil diunggah dan menunggu verifikasi.');
+            return redirect()->to(base_url('admin/transaksi'));
+        } else {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunggah bukti pembayaran.');
+        }
+    }
+
+    // Siapkan data untuk view
+    $data = [
+        'title'        => 'Simpan Konfirmasi Pembayaran',
+        'transaksi'    => $transaksi,  
+        'content'      => 'admin/transaksi/simpankonfirmasi',  // View untuk form konfirmasi
+    ];
+
+    return view('admin/layout/wrapper', $data); // Pastikan menggunakan 'return' agar lebih sesuai dengan standar
+}
+
+
 
 
 }
