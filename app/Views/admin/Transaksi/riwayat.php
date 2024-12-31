@@ -9,7 +9,6 @@
                 <th>Tipe Transaksi</th>
                 <th>Nominal</th>
                 <th>Keterangan</th>
-                <th width="15%">Status</th>
             </tr>
         </thead>
         <tbody>
