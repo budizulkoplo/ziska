@@ -28,7 +28,7 @@
                                 <?= esc($row['status']) ?>
                             </span>
                         </td>
-                        <td><a href="<?= base_url('admin/transaksi/detail/' . $row['idtransaksi']) ?>" class="btn btn-success btn-sm">
+                        <td><a href="<?= base_url('admin/transaksi/konfirmasi/' . $row['idtransaksi']) ?>" class="btn btn-success btn-sm">
                     <i class="fa fa-edit"></i> Detail
                 </a></td>
                     </tr>

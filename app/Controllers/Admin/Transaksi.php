@@ -77,8 +77,6 @@ class Transaksi extends BaseController
     echo view('admin/layout/wrapper', $data);
 }
 
-
-
     // Menyimpan data transaksi baru
     public function store()
 {
@@ -371,9 +369,6 @@ public function updateStatusTransaksi($idtransaksi)
     return redirect()->to(base_url('admin/transaksi'));
 }
 
-
-
-
 public function delete($idtransaksi)
 {
     checklogin(); // Pastikan pengguna sudah login
@@ -409,6 +404,63 @@ public function delete($idtransaksi)
 
     $this->session->setFlashdata('sukses', 'Transaksi berhasil dihapus.');
     return redirect()->to(base_url('admin/transaksi'));
+}
+
+public function konfirmasi($idtransaksi)
+{
+    checklogin(); // Pastikan pengguna sudah login
+
+    // Model yang dibutuhkan
+    $m_transaksi = new \App\Models\TransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
+
+    // Ambil data transaksi berdasarkan ID
+    $transaksi = $m_transaksi->find($idtransaksi);
+    if (!$transaksi || $transaksi['status'] !== 'pending') {
+        return redirect()->back()->with('error', 'Transaksi tidak ditemukan atau status sudah selesai.');
+    }
+
+    // Ambil data rekening
+    $rekening = $m_rekening->find($transaksi['idrek']);
+    if (!$rekening) {
+        return redirect()->back()->with('error', 'Rekening tujuan tidak ditemukan.');
+    }
+
+    if ($this->request->getMethod() === 'post') {
+        // Validasi input
+        if (!$this->validate([
+            'buktibayar' => 'uploaded[buktibayar]|max_size[buktibayar,2048]|ext_in[buktibayar,jpg,jpeg,png]',
+        ])) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Proses unggah file bukti bayar
+        $buktiBayar = $this->request->getFile('buktibayar');
+        if ($buktiBayar->isValid() && !$buktiBayar->hasMoved()) {
+            $fileName = $buktiBayar->getRandomName();
+            $buktiBayar->move('uploads/buktibayar', $fileName);
+
+            // Perbarui transaksi dengan bukti bayar
+            $m_transaksi->update($idtransaksi, [
+                'buktibayar' => $fileName,
+                'status'     => 'menunggu_verifikasi', // Ubah status transaksi
+            ]);
+
+            $this->session->setFlashdata('sukses', 'Bukti pembayaran berhasil diunggah dan menunggu verifikasi.');
+            return redirect()->to(base_url('admin/transaksi'));
+        } else {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunggah bukti pembayaran.');
+        }
+    }
+
+    $data = [
+        'title'       => 'Bayar Zakat',
+        'kodetransaksi' => $kodetransaksi, // Data kode transaksi
+        'rekening'    => $rekening,       // Rekening yang terkait dengan Zakat
+        'content'     => 'admin/transaksi/zakat',  // View untuk form tambah transaksi
+    ];
+
+    echo view('admin/layout/wrapper', $data);
 }
 
 
