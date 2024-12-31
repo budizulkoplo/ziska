@@ -11,33 +11,32 @@ class Transaksi extends BaseController
     public function index()
 {
     checklogin(); // Pastikan pengguna sudah login
+    $m_transaksi = new \App\Models\TransaksiModel();
+    $m_muzaki = new \App\Models\Muzaki_model();
 
-    $m_transaksi = new TransaksiModel();
-
-    // Periksa level akses
-    if (session('akses_level') === 'muzaki') {
-        $username = session('username'); // Ambil username dari session
-        $transaksi = $m_transaksi->where('muzaki', $username)->findAll(); // Filter berdasarkan username
-        
-        $data = [
-            'title'    => 'Riwayat Transaksi',
-            'transaksi' => $transaksi, // Data transaksi untuk muzaki
-            'content'  => 'admin/transaksi/riwayat', // View untuk muzaki
-        ];
-        echo view('admin/layout/wrapper', $data);
+    if (session('akses_level') !== 'muzaki') {
+        // Ambil data transaksi dengan join ke tabel muzaki
+        $transaksi = $m_transaksi
+            ->select('transaksi.*, muzaki.nama AS nama_muzaki')
+            ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
+            ->findAll();
     } else {
-        $transaksi = $m_transaksi->findAll(); // Ambil semua data transaksi untuk admin
-
-        $data = [
-            'title'    => 'Daftar Transaksi',
-            'transaksi' => $transaksi, // Data transaksi
-            'content'  => 'admin/transaksi/index', // View untuk admin
-        ];
-        echo view('admin/layout/wrapper', $data);
+        // Ambil data transaksi hanya untuk muzaki yang sedang login
+        $transaksi = $m_transaksi
+            ->where('muzaki', session('username'))
+            ->findAll();
     }
+
+    $data = [
+        'title'     => (session('akses_level') === 'muzaki') ? 'Riwayat Transaksi' : 'Daftar Transaksi',
+        'transaksi' => $transaksi, 
+        'content'   => (session('akses_level') === 'muzaki') ? 'admin/transaksi/riwayat' : 'admin/transaksi/index',
+    ];
+
+    echo view('admin/layout/wrapper', $data);
 }
 
-    // Menampilkan form untuk menambah transaksi
+
     public function create()
     {
         checklogin();  // Pastikan pengguna sudah login
@@ -162,9 +161,15 @@ class Transaksi extends BaseController
     // Inisialisasi model yang diperlukan
     $m_transaksi = new \App\Models\TransaksiModel();
     $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
+    $m_muzaki = new \App\Models\Muzaki_model();
 
     // Ambil data transaksi berdasarkan ID
-    $transaksi = $m_transaksi->find($idtransaksi);
+    $transaksi = $m_transaksi
+        ->select('transaksi.*, muzaki.nama AS nama_muzaki') // Pilih field tambahan dari tabel muzaki
+        ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left') // Join dengan tabel muzaki
+        ->where('transaksi.idtransaksi', $idtransaksi)
+        ->first();
+
     if (!$transaksi) {
         throw new \CodeIgniter\Exceptions\PageNotFoundException('Transaksi dengan ID ' . $idtransaksi . ' tidak ditemukan.');
     }
@@ -183,7 +188,6 @@ class Transaksi extends BaseController
     // Render view dengan wrapper
     return view('admin/layout/wrapper', $data);
 }
-
 
     // Menyimpan perubahan data transaksi
     public function update($idtransaksi)

@@ -9,6 +9,7 @@
                 <th>Tipe Transaksi</th>
                 <th>Nominal</th>
                 <th>Keterangan</th>
+                <th width="15%">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +21,13 @@
                         <td><?= esc($row['tipetransaksi']) ?></td>
                         <td><?= number_format($row['nominal'], 2, ',', '.') ?></td>
                         <td><?= esc($row['keterangan']) ?></td>
+                        <td>
+                            <span class="badge 
+                                <?= ($row['status'] === 'sukses') ? 'bg-success' : (($row['status'] === 'verifikasi') ? 'bg-warning' : 'bg-danger') ?>">
+                                <?= esc($row['status']) ?>
+                            </span>
+                        </td>
+
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

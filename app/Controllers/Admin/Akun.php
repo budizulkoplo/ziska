@@ -3,20 +3,40 @@
 namespace App\Controllers\Admin;
 
 use App\Models\User_model;
+use App\Models\Muzaki_model;
 
 class Akun extends BaseController
 {
     public function index()
     {
         checklogin();
-        $id_user = $this->session->get('id_user');
-        $m_user  = new User_model();
-        $user    = $m_user->detail($id_user);
 
-        // Start validasi
+        $aksesLevel = $this->session->get('akses_level');
+        $id_user = $this->session->get('id_user');
+        $username = $this->session->get('username');
+
+        if ($aksesLevel === 'muzaki') {
+            $m_muzaki = new Muzaki_model();
+            $user = $m_muzaki->select('id as id_user, nama, username, password, nik, alamat, nohp, keterangan, foto as gambar, created_at, updated_at')
+                             ->where('username', $username)
+                             ->first();
+
+            if (!$user) {
+                throw new \CodeIgniter\Exceptions\PageNotFoundException('Data muzaki tidak ditemukan.');
+            }
+        } else {
+            $m_user = new User_model();
+            $user = $m_user->detail($id_user);
+
+            if (!$user) {
+                throw new \CodeIgniter\Exceptions\PageNotFoundException('Data user tidak ditemukan.');
+            }
+        }
+
+        // Validasi dan update
         if ($this->request->getMethod() === 'post' && $this->validate(
             [
-                'id_user' => 'required',
+                'nama' => 'required',
                 'gambar' => [
                     'mime_in[gambar,image/jpg,image/jpeg,image/gif,image/png]',
                     'max_size[gambar,4096]',
@@ -25,8 +45,6 @@ class Akun extends BaseController
         )) {
             $data = [
                 'nama'       => $this->request->getPost('nama'),
-                'email'      => $this->request->getPost('email'),
-                'username'   => $this->request->getPost('username'),
                 'nik'        => $this->request->getPost('nik'),
                 'alamat'     => $this->request->getPost('alamat'),
                 'nohp'       => $this->request->getPost('nohp'),
@@ -34,19 +52,18 @@ class Akun extends BaseController
                 'updated_at' => date('Y-m-d H:i:s'),
             ];
 
-            // Handle password update
+            // Update password jika ada
             $password = $this->request->getPost('password');
             if (!empty($password) && strlen($password) >= 6 && strlen($password) <= 32) {
                 $data['password'] = password_hash($password, PASSWORD_DEFAULT);
             }
 
-            // Handle image upload
+            // Upload gambar baru
             if (!empty($_FILES['gambar']['name'])) {
-                $avatar   = $this->request->getFile('gambar');
+                $avatar = $this->request->getFile('gambar');
                 $namabaru = $avatar->getRandomName();
                 $avatar->move(WRITEPATH . '../assets/upload/image/', $namabaru);
 
-                // Create thumbnail
                 \Config\Services::image()
                     ->withFile(WRITEPATH . '../assets/upload/image/' . $namabaru)
                     ->fit(100, 100, 'center')
@@ -54,24 +71,31 @@ class Akun extends BaseController
 
                 $data['gambar'] = $namabaru;
 
-                // Hapus gambar lama jika ada
-                if (!empty($user['gambar']) && file_exists(WRITEPATH . '../assets/upload/image/' . $user['gambar'])) {
-                    unlink(WRITEPATH . '../assets/upload/image/' . $user['gambar']);
-                    unlink(WRITEPATH . '../assets/upload/image/thumbs/' . $user['gambar']);
+                // Hapus gambar lama
+                $gambarLama = $user['gambar'];
+                if (!empty($gambarLama) && file_exists(WRITEPATH . '../assets/upload/image/' . $gambarLama)) {
+                    unlink(WRITEPATH . '../assets/upload/image/' . $gambarLama);
+                    unlink(WRITEPATH . '../assets/upload/image/thumbs/' . $gambarLama);
                 }
             }
 
-            $m_user->update($id_user, $data);
+            if ($aksesLevel === 'muzaki') {
+                $m_muzaki->update($user['id_user'], $data);
+            } else {
+                $m_user->update($id_user, $data);
+            }
 
             $this->session->setFlashdata('sukses', 'Data telah diperbarui.');
             return redirect()->to(base_url('admin/akun'));
         }
 
         $data = [
-            'title'   => 'Update Profile: ' . $user['nama'],
-            'user'    => $user,
-            'content' => 'admin/akun/index',
+            'title'       => 'Update Profile: ' . $user['nama'],
+            'user'        => $user,
+            'aksesLevel'  => $aksesLevel, // Tambahkan ini
+            'content'     => 'admin/akun/index',
         ];
+        
         echo view('admin/layout/wrapper', $data);
     }
 }

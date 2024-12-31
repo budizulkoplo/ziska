@@ -36,11 +36,12 @@
 
     <!-- Input Muzaki -->
     <div class="form-group row">
-        <label for="muzaki" class="col-3 col-form-label">Muzaki</label>
-        <div class="col-9">
-            <input type="text" id="muzaki" name="muzaki" class="form-control" placeholder="Nama Muzaki" value="<?= set_value('muzaki', $transaksi['muzaki']) ?>" required>
-        </div>
+    <label class="col-3 col-form-label">Nama Muzaki</label>
+    <div class="col-9">
+        <input type="text" class="form-control" value="<?= esc($transaksi['nama_muzaki'] ?? $transaksi['muzaki']) ?>" disabled>
     </div>
+</div>
+
 
     <!-- Input Nominal -->
     <div class="form-group row">

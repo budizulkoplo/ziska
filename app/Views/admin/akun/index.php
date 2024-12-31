@@ -16,12 +16,14 @@
             </div>
             
             <!-- Email -->
+            <?php if ($aksesLevel !== 'muzaki'): ?>
             <div class="form-group row">
                 <label class="col-3">Email</label>
                 <div class="col-9">
                     <input type="email" name="email" class="form-control" placeholder="Email pengguna" value="<?= $user['email'] ?>" required>
                 </div>
             </div>
+            <?php endif; ?>
             
             <!-- Username -->
             <div class="form-group row">
