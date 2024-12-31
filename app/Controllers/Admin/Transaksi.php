@@ -9,18 +9,33 @@ class Transaksi extends BaseController
 {
     // Menampilkan daftar transaksi
     public function index()
-    {
-        checklogin();  // Pastikan pengguna sudah login
-        $m_transaksi = new TransaksiModel();
-        $transaksi   = $m_transaksi->findAll();  // Mengambil semua data transaksi
+{
+    checklogin(); // Pastikan pengguna sudah login
+
+    $m_transaksi = new TransaksiModel();
+
+    // Periksa level akses
+    if (session('akses_level') === 'muzaki') {
+        $username = session('username'); // Ambil username dari session
+        $transaksi = $m_transaksi->where('muzaki', $username)->findAll(); // Filter berdasarkan username
+        
+        $data = [
+            'title'    => 'Riwayat Transaksi',
+            'transaksi' => $transaksi, // Data transaksi untuk muzaki
+            'content'  => 'admin/transaksi/riwayat', // View untuk muzaki
+        ];
+        echo view('admin/layout/wrapper', $data);
+    } else {
+        $transaksi = $m_transaksi->findAll(); // Ambil semua data transaksi untuk admin
 
         $data = [
             'title'    => 'Daftar Transaksi',
-            'transaksi' => $transaksi,  // Data transaksi
-            'content'  => 'admin/transaksi/index',  // View yang digunakan
+            'transaksi' => $transaksi, // Data transaksi
+            'content'  => 'admin/transaksi/index', // View untuk admin
         ];
         echo view('admin/layout/wrapper', $data);
     }
+}
 
     // Menampilkan form untuk menambah transaksi
     public function create()
@@ -241,7 +256,7 @@ class Transaksi extends BaseController
     $dataTransaksi = [
         'tipetransaksi' => 'Zakat',
         'tgltransaksi'  => $this->request->getPost('tgltransaksi'),
-        'muzaki'        => $this->session->get('nama'),
+        'muzaki'        => $this->session->get('username'),
         'nominal'       => $nominal,
         'keterangan'    => $this->request->getPost('keterangan'),
         'zakat'         => $this->request->getPost('jeniszakat'),
