@@ -9,6 +9,7 @@
                 <th>Tipe Transaksi</th>
                 <th>Nominal</th>
                 <th>Keterangan</th>
+<th>Aksi</th>
             </tr>
         </thead>
         <tbody>
