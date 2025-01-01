@@ -42,9 +42,9 @@ class ProgramLazis extends BaseController
     if (!$this->validate([
         'tglmulai'     => 'required|valid_date',
         'tglselesai'   => 'required|valid_date',
-        'judul'        => 'required|string|max_length[255]',
-        'deskripsi'    => 'required|string',
-        'foto'         => 'uploaded[foto]|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]',
+        'judulprogram'        => 'required|string|max_length[255]',
+        'deskripsiprogram'    => 'required|string',
+        'fotoprogram'         => 'uploaded[fotoprogram]|is_image[fotoprogram]|mime_in[fotoprogram,image/jpg,image/jpeg,image/png]|max_size[fotoprogram,2048]',
         'targetdonasi' => 'required|numeric',
         'terkumpul'    => 'required|numeric',
     ])) {
@@ -52,7 +52,7 @@ class ProgramLazis extends BaseController
     }
 
     // Proses upload file
-    $file = $this->request->getFile('foto');
+    $file = $this->request->getFile('fotoprogram');
     $filename = null; // Default jika tidak ada file diunggah
 
     if ($file->isValid() && !$file->hasMoved()) {
@@ -66,9 +66,9 @@ class ProgramLazis extends BaseController
     $data = [
         'tglmulai'     => $this->request->getPost('tglmulai'),
         'tglselesai'   => $this->request->getPost('tglselesai'),
-        'judul'        => $this->request->getPost('judul'),
-        'deskripsi'    => $this->request->getPost('deskripsi'),
-        'foto'         => $filename, // Nama file gambar yang telah diupload
+        'judulprogram'        => $this->request->getPost('judulprogram'),
+        'deskripsiprogram'    => $this->request->getPost('deskripsiprogram'),
+        'fotoprogram'         => $filename, // Nama file gambar yang telah diupload
         'targetdonasi' => $this->request->getPost('targetdonasi'),
         'terkumpul'    => $this->request->getPost('terkumpul'),
     ];
@@ -110,9 +110,9 @@ class ProgramLazis extends BaseController
     if (!$this->validate([
         'tglmulai'     => 'required|valid_date',
         'tglselesai'   => 'required|valid_date',
-        'judul'        => 'required|string|max_length[255]',
-        'deskripsi'    => 'required|string',
-        'foto'         => 'permit_empty|uploaded[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,2048]',
+        'judulprogram'        => 'required|string|max_length[255]',
+        'deskripsiprogram'    => 'required|string',
+        'fotoprogram'         => 'permit_empty|uploaded[fotoprogram]|mime_in[fotoprogram,image/jpg,image/jpeg,image/png]|max_size[fotoprogram,2048]',
         'targetdonasi' => 'required|numeric',
         'terkumpul'    => 'required|numeric',
     ])) {
@@ -120,15 +120,15 @@ class ProgramLazis extends BaseController
     }
 
     // Menangani unggahan file gambar
-    $foto = $this->request->getFile('foto');
-    $fotoName = null;
+    $fotoprogram = $this->request->getFile('fotoprogram');
+    $fotoprogramName = null;
 
-    if ($foto && $foto->isValid() && !$foto->hasMoved()) {
-        $fotoName = $foto->getRandomName();  // Generate nama unik untuk file
-        $foto->move('assets/upload/programlazis', $fotoName);  // Simpan file
+    if ($fotoprogram && $fotoprogram->isValid() && !$fotoprogram->hasMoved()) {
+        $fotoprogramName = $fotoprogram->getRandomName();  // Generate nama unik untuk file
+        $fotoprogram->move('assets/uploads/programlazis', $fotoprogramName);  // Simpan file
     }
 
-    // Ambil data lama untuk menjaga foto lama jika tidak ada file baru yang diunggah
+    // Ambil data lama untuk menjaga fotoprogram lama jika tidak ada file baru yang diunggah
     $program = $m_program->find($idprogram);
     if (!$program) {
         $this->session->setFlashdata('error', 'Program tidak ditemukan');
@@ -139,9 +139,9 @@ class ProgramLazis extends BaseController
     $data = [
         'tglmulai'     => $this->request->getPost('tglmulai'),
         'tglselesai'   => $this->request->getPost('tglselesai'),
-        'judul'        => $this->request->getPost('judul'),
-        'deskripsi'    => $this->request->getPost('deskripsi'),
-        'foto'         => $fotoName ? $fotoName : $program['foto'],  // Jika foto baru diunggah, gunakan nama file baru
+        'judulprogram'        => $this->request->getPost('judulprogram'),
+        'deskripsiprogram'    => $this->request->getPost('deskripsiprogram'),
+        'fotoprogram'         => $fotoprogramName ? $fotoprogramName : $program['fotoprogram'],  // Jika fotoprogram baru diunggah, gunakan nama file baru
         'targetdonasi' => $this->request->getPost('targetdonasi'),
         'terkumpul'    => $this->request->getPost('terkumpul'),
     ];
@@ -171,4 +171,29 @@ class ProgramLazis extends BaseController
 
         return redirect()->to(base_url('admin/programlazis'));  // Kembali ke halaman daftar program
     }
+
+    public function viewprogram()
+    {
+        // Memastikan pengguna telah login
+        checklogin();
+
+        // Memuat model ProgramLazis
+        $m_program = new ProgramLazisModel();
+
+        // Mendapatkan data semua program
+        $program = $m_program->findAll();
+
+        // Mengirim data ke view
+        $data = [
+            'title'   => 'Program Lazis',
+            'program' => $program, // Data program untuk ditampilkan
+            'content' => 'admin/programlazis/viewprogram', // View yang akan ditampilkan
+        ];
+
+        // Menampilkan view
+        echo view('admin/layout/wrapper', $data);
+    }
+
+    
 }
+

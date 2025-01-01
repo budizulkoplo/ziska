@@ -3,7 +3,7 @@
 <div class="form-group row">
     <label class="col-3">Judul Program</label>
     <div class="col-9">
-        <input type="text" name="judul" class="form-control" placeholder="Judul Program" value="<?= $program['judul'] ?>" required>
+        <input type="text" name="judulprogram" class="form-control" placeholder="Judul Program" value="<?= $program['judulprogram'] ?>" required>
     </div>
 </div>
 
@@ -24,19 +24,19 @@
 <div class="form-group row">
     <label class="col-3">Deskripsi</label>
     <div class="col-9">
-        <textarea name="deskripsi" class="form-control konten" required><?= $program['deskripsi'] ?></textarea>
+        <textarea name="deskripsiprogram" class="form-control konten" required><?= $program['deskripsiprogram'] ?></textarea>
     </div>
 </div>
 
 <div class="form-group row">
     <label class="col-3">Foto</label>
     <div class="col-9">
-        <?php if ($program['foto']): ?>
+        <?php if ($program['fotoprogram']): ?>
             <div>
-                <img src="<?= base_url('assets/upload/programlazis/' . $program['foto']) ?>" class="img img-thumbnail" width="100">
+                <img src="<?= base_url('assets/upload/programlazis/' . $program['fotoprogram']) ?>" class="img img-thumbnail" width="100">
             </div>
         <?php endif; ?>
-        <input type="file" name="foto" class="form-control mt-2">
+        <input type="file" name="fotoprogram" class="form-control mt-2">
     </div>
 </div>
 

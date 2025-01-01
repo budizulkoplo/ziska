@@ -13,9 +13,9 @@ class ProgramLazisModel extends Model
     protected $allowedFields    = [
         'tglmulai', 
         'tglselesai', 
-        'judul', 
-        'deskripsi', 
-        'foto', 
+        'judulprogram', 
+        'deskripsiprogram', 
+        'fotoprogram', 
         'targetdonasi', 
         'terkumpul'
     ];
@@ -27,9 +27,9 @@ class ProgramLazisModel extends Model
     protected $validationRules  = [
         'tglmulai'     => 'required|valid_date',
         'tglselesai'   => 'required|valid_date',
-        'judul'        => 'required|string|max_length[255]',
-        'deskripsi'    => 'required|string',
-        'foto'         => 'permit_empty|string',
+        'judulprogram'        => 'required|string|max_length[255]',
+        'deskripsiprogram'    => 'required|string',
+        'fotoprogram'         => 'permit_empty|string',
         'targetdonasi' => 'required|numeric',
         'terkumpul'    => 'required|numeric'
     ];
@@ -38,7 +38,7 @@ class ProgramLazisModel extends Model
         // Custom validation messages (optional)
         'tglmulai'     => ['required' => 'Tanggal mulai wajib diisi'],
         'tglselesai'   => ['required' => 'Tanggal selesai wajib diisi'],
-        'judul'        => ['required' => 'Judul wajib diisi'],
+        'judulprogram'        => ['required' => 'judulprogram wajib diisi'],
         'targetdonasi' => ['required' => 'Target donasi wajib diisi'],
     ];
 

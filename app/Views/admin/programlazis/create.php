@@ -4,7 +4,7 @@
 <div class="form-group row">
     <label class="col-3">Judul Program</label>
     <div class="col-9">
-        <input type="text" name="judul" class="form-control" placeholder="Judul Program" required>
+        <input type="text" name="judulprogram" class="form-control" placeholder="Judul Program" required>
     </div>
 </div>
 
@@ -25,14 +25,14 @@
 <div class="form-group row">
     <label class="col-3">Deskripsi</label>
     <div class="col-9">
-        <textarea name="deskripsi" class="form-control konten"></textarea>
+        <textarea name="deskripsiprogram" class="form-control konten"></textarea>
     </div>
 </div>
 
 <div class="form-group row">
     <label class="col-3">Foto</label>
     <div class="col-9">
-        <input type="file" name="foto" class="form-control">
+        <input type="file" name="fotoprogram" class="form-control">
     </div>
 </div>
 

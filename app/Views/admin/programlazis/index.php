@@ -22,15 +22,15 @@
         <tr>
             <td><?= $no ?></td>
             <td>
-                <?php if ($item['foto'] === ''): ?>
+                <?php if ($item['fotoprogram'] === ''): ?>
                     -
                 <?php else: ?>
-                    <img src="<?= base_url('assets/upload/programlazis/' . $item['foto']) ?>" class="img img-thumbnail" width="50">
+                    <img src="<?= base_url('assets/upload/programlazis/' . $item['fotoprogram']) ?>" class="img img-thumbnail" width="50">
                 <?php endif; ?>
             </td>
             <td>
                 <a href="<?= base_url('admin/programlazis/edit/' . $item['idprogram']) ?>">
-                    <?= $item['judul'] ?>
+                    <?= $item['judulprogram'] ?>
                 </a>
             </td>
             <td><?= date('d-m-Y', strtotime($item['tglmulai'])) ?></td>
