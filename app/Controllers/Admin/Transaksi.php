@@ -338,10 +338,16 @@ public function updateStatusTransaksi($idtransaksi)
         // Hapus log transaksi
         $m_log->where('idtransaksi', $idtransaksi)->delete();
 
-        // Jika ada program terkait, kurangi jumlah terkumpul
-        if (!empty($idprogram)) {
-            $m_program->update($idprogram, ['terkumpul' => "terkumpul - $nominal"], false);
-        }
+        // Jika ada program terkait, tambahkan jumlah terkumpul
+if (!empty($idprogram)) {
+    // Ambil data program terkait
+    $program = $m_program->find($idprogram);
+    if ($program) {
+        $terkumpulBaru = $program['terkumpul'] + $nominal; // Hitung jumlah terkumpul baru
+        $m_program->update($idprogram, ['terkumpul' => $terkumpulBaru]); // Update ke database
+    }
+}
+
     } elseif ($statusLama !== 'sukses' && $statusBaru === 'sukses') {
         // Status berubah menjadi sukses: lakukan perhitungan saldo
         $saldoawal = $rekening['saldoakhir'];
