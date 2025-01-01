@@ -282,6 +282,7 @@ public function updateStatusTransaksi($idtransaksi)
     $m_rekening = new \App\Models\RekeningModel();
     $m_log = new \App\Models\TransactionLogModel();
     $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
+    $m_program = new \App\Models\ProgramLazisModel(); // Model untuk tabel programlazis
 
     // Validasi input status
     $statusBaru = $this->request->getPost('status');
@@ -297,6 +298,8 @@ public function updateStatusTransaksi($idtransaksi)
 
     $statusLama = $transaksi['status']; // Status sebelumnya
     $tipetransaksi = $transaksi['tipetransaksi'];
+    $idprogram = $transaksi['program']; // ID program dari transaksi
+    $nominal = $transaksi['nominal'];
 
     // Ambil informasi cashflow berdasarkan tipe transaksi
     $kodetransaksi = $m_kodetransaksi->where('kodetransaksi', $tipetransaksi)->first();
@@ -318,8 +321,6 @@ public function updateStatusTransaksi($idtransaksi)
         return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
     }
 
-    $nominal = $transaksi['nominal'];
-
     // Perhitungan saldo berdasarkan perubahan status
     if ($statusLama === 'sukses' && $statusBaru !== 'sukses') {
         // Status berubah dari sukses ke selain sukses: batalkan perhitungan saldo
@@ -336,6 +337,11 @@ public function updateStatusTransaksi($idtransaksi)
 
         // Hapus log transaksi
         $m_log->where('idtransaksi', $idtransaksi)->delete();
+
+        // Jika ada program terkait, kurangi jumlah terkumpul
+        if (!empty($idprogram)) {
+            $m_program->update($idprogram, ['terkumpul' => "terkumpul - $nominal"], false);
+        }
     } elseif ($statusLama !== 'sukses' && $statusBaru === 'sukses') {
         // Status berubah menjadi sukses: lakukan perhitungan saldo
         $saldoawal = $rekening['saldoakhir'];
@@ -360,6 +366,11 @@ public function updateStatusTransaksi($idtransaksi)
             'cashflow'    => $cashflow,
         ];
         $m_log->insert($dataLog);
+
+        // Jika ada program terkait, tambahkan jumlah terkumpul
+        if (!empty($idprogram)) {
+            $m_program->update($idprogram, ['terkumpul' => "terkumpul + $nominal"], false);
+        }
     }
 
     // Update status transaksi
@@ -368,6 +379,7 @@ public function updateStatusTransaksi($idtransaksi)
     $this->session->setFlashdata('sukses', 'Status transaksi berhasil diperbarui.');
     return redirect()->to(base_url('admin/transaksi'));
 }
+
 
 public function delete($idtransaksi)
 {

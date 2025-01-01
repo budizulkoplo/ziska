@@ -194,6 +194,76 @@ class ProgramLazis extends BaseController
         echo view('admin/layout/wrapper', $data);
     }
 
+    public function donate($idprogram)
+{
+    checklogin(); // Pastikan pengguna sudah login
+
+    $m_program = new ProgramLazisModel();
+    $program = $m_program->find($idprogram); // Ambil data program berdasarkan ID
+
+    if (!$program) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Program dengan ID ' . $idprogram . ' tidak ditemukan');
+    }
+
+    $data = [
+        'title'   => 'Donasi Program: ' . $program['judulprogram'],
+        'program' => $program, // Data program untuk ditampilkan
+        'content' => 'admin/programlazis/donate', // View untuk formulir donasi
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
+// Simpan donasi
+public function storeDonation()
+{
+    checklogin(); // Pastikan pengguna sudah login
+
+    $transaksiModel = new \App\Models\TransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
+    $m_kodetransaksi = new \App\Models\KodeTransaksiModel(); 
+
+    // Validasi input
+    if (!$this->validate([
+        'idprogram'    => 'required|integer',
+        'jumlah'       => 'required|numeric',
+        'keterangan'   => 'required|string|max_length[255]',
+    ])) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+    }
+
+    // Ambil data cashflow dan idrek dari tabel m_kodetransaksi
+    $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', 'Donasi')->first(); // Ambil berdasarkan kodetransaksi 'Donasi'
+    if (!$kodeTransaksi) {
+        return redirect()->back()->with('error', 'Kode transaksi untuk Donasi tidak ditemukan.');
+    }
+
+    $cashflow = $kodeTransaksi['cashflow']; // Ambil nilai cashflow
+    $idrek = $kodeTransaksi['idrekening']; // Ambil nilai idrek
+
+    // Ambil data dari input form
+    $data = [
+        'tipetransaksi' => 'Donasi',
+        'tgltransaksi'  => date('Y-m-d H:i:s'),
+        'muzaki'        => session()->get('username'), // Username dari session
+        'nominal'       => $this->request->getPost('jumlah'),
+        'keterangan'    => $this->request->getPost('keterangan'),
+        'program'       => $this->request->getPost('idprogram'), // ID program
+        'donasi'        => $this->request->getPost('namaprogram'), // Nama program
+        'idrek'         => $idrek, // ID Rekening dari KodeTransaksi
+        'status'        => 'pending', // Default status transaksi
+        'cashflow'      => $cashflow, // Cashflow berdasarkan kodetransaksi
+        'buktibayar'    => null, // Diisi jika ada bukti bayar
+    ];
+
+    // Simpan data ke database
+    $transaksiModel->save($data);
+
+    // Redirect dengan pesan sukses
+    return redirect()->to(base_url('admin/transaksi'))->with('sukses', 'Donasi berhasil ditambahkan, menunggu verifikasi.');
+}
+
+
     
 }
 

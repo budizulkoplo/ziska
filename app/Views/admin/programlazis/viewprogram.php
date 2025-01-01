@@ -5,7 +5,7 @@
             <div class="carousel-item <?= $isActive ? 'active' : '' ?>">
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <div class="card h-100">
                                 <img 
                                     src="<?= base_url('assets/upload/programlazis/' . $item['fotoprogram']) ?>" 
@@ -16,7 +16,7 @@
                                     <h5 class="card-title text-center"><?= $item['judulprogram'] ?></h5>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <a href="<?= base_url('programlazis/detail/' . $item['idprogram']) ?>" class="btn btn-primary btn-sm">
+                                    <a href="<?= base_url('admin/programlazis/donate/' . $item['idprogram']) ?>" class="btn btn-success w-100 mt-4">
                                         <i class="fa fa-eye"></i> Lihat Program
                                     </a>
                                 </div>
