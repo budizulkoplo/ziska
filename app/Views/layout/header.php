@@ -33,7 +33,7 @@ $menu_layanan  = $menu->layanan();
 
     <nav id="navbar" class="navbar order-last order-lg-0">
       <ul>
-        <li><a class="nav-link scrollto <?php if (strlen($title) > 50) {
+        <li><a class="nav-link scrollto <?php if ($title =="Lazismu | Home") {
                                           echo "active";
                                         } ?>" href="<?php echo base_url() ?>">Home</a></li>
         <li><a class="nav-link scrollto <?php if ($title == "Tentang Kami") {
