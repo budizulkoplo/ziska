@@ -1,9 +1,17 @@
+<?php
+
+use App\Models\Konfigurasi_model;
+
+$konfigurasi  = new Konfigurasi_model;
+$site         = $konfigurasi->listing();
+
+?>
 <main id="main">
   <!-- ======= Breadcrumbs Section ======= -->
   <section class="breadcrumbs">
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
-        <h2>Mentari Land Property</h2>
+        <h2><?php echo $site['namaweb']; ?></h2>
         <ol>
           <li><a href="<?php echo base_url() ?>">Home</a></li>
           <li><?php echo $title ?></li>

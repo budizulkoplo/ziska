@@ -1,15 +1,3 @@
-<?php
-
-use App\Models\Menu_model;
-
-$menu         = new Menu_model();
-$berita       = $menu->berita();
-$profil       = $menu->profil();
-$layanan      = $menu->layanan();
-
-$title = "Home";
-?>
-
 <!-- ======= Hero Section ======= -->
 <section id="hero">
   <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -17,27 +5,28 @@ $title = "Home";
     <ol class="carousel-indicators" id="hero-carousel-indicators"></ol>
 
     <div class="carousel-inner" role="listbox">
-      <?php $noslide = 1;
-      foreach ($slider as $slider) {  ?>
-        <!-- Slide 1 -->
+      <?php $noslide = 1; ?>
+      <?php foreach ($slider as $program) : ?>
+        <!-- Slide -->
         <div class="carousel-item<?php if ($noslide == 1) {
                                     echo ' active';
-                                  } ?>" style="background-image: url(<?php echo base_url('assets/upload/image/' . $slider['gambar']) ?>)">
-          <?php if ($slider['status_text'] == "Ya") {  ?>
-            <br><br><br><br><br><br><span style="background-color: rgba(255, 255, 255, 0.5);">
-              <div class="container" style="max-width: 90%; text-align: left; padding-left: 2%; padding-right: 2%; text-shadow: 8px 8px 8px rgba(0,0,0,0.3);">
+                                  } ?>" style="background-image: url(<?php echo base_url('assets/upload/programlazis/' . $program['fotoprogram']) ?>)">
+          <br><br><br><br><br><br>
+          <span style="background-color: rgba(255, 255, 255, 0.5);">
+            <div class="container" style="max-width: 90%; text-align: left; padding-left: 2%; padding-right: 2%; text-shadow: 8px 8px 8px rgba(0,0,0,0.3);">
 
-                <h2><?php echo $slider['judul_galeri'] ?></h2>
-                <h4><span style="color:#F6B10E;"> <?php echo $slider['isi'] ?> </span></h4>
-                <a href="<?php echo base_url() ?>/berita/profil/kontak" class="btn-get-started scrollto">Contact Us</a>
+              <h2><?php echo $program['judulprogram']; ?></h2>
+              
+              <p>Target: Rp<?php echo number_format($program['targetdonasi'], 0, ',', '.'); ?><br>
+              Terkumpul: Rp<?php echo number_format($program['terkumpul'], 0, ',', '.'); ?></p>
+              
+              <a href="<?php echo base_url('program/detail/' . $program['idprogram']); ?>" class="btn-get-started scrollto">Selengkapnya</a>
 
-              </div>
-            </span>
-          <?php } ?>
+            </div>
+          </span>
         </div>
-      <?php $noslide++;
-      } ?>
-
+      <?php $noslide++; ?>
+      <?php endforeach; ?>
     </div>
 
     <a class="carousel-control-prev" href="#heroCarousel" role="button" data-bs-slide="prev">
@@ -61,7 +50,7 @@ $title = "Home";
     <div class="container" data-aos="fade-up">
 
       <div class="section-title">
-        <h2>Who we are</h2>
+        <h2>Masih Bingung Untuk Berzakat?</h2>
         <p> <?php echo tagline() ?> <a href="<?php echo base_url() ?>/berita/profil/about-us">Read More..</a></p>
       </div>
 

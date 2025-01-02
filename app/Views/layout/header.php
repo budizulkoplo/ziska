@@ -36,36 +36,33 @@ $menu_layanan  = $menu->layanan();
         <li><a class="nav-link scrollto <?php if (strlen($title) > 50) {
                                           echo "active";
                                         } ?>" href="<?php echo base_url() ?>">Home</a></li>
-        <li><a class="nav-link scrollto <?php if ($title == "About Us") {
+        <li><a class="nav-link scrollto <?php if ($title == "Tentang Kami") {
                                           echo "active";
-                                        } ?> " href="<?php echo base_url() ?>/berita/profil/about-us"><span>Profil</span> </i></a>
+                                        } ?> " href="<?php echo base_url() ?>/berita/profil/about"><span>LAZISMU</span> </i></a>
         </li>
+        <li><a class="nav-link scrollto <?php if ($title == "Wakaf") {
+                                          echo "active";
+                                        } ?>" href="<?php echo base_url('wakaf') ?>">WAKAF</a></li>
+         <li><a class="nav-link scrollto <?php if ($title == "Program Lazis") {
+                                          echo "active";
+                                        } ?>" href="<?php echo base_url('program') ?>">PROGRAM</a></li>
 
 
-        <li class="dropdown"><a href="#" class="<?php if ($title <> "About Us" and $title <> "Kontak Kami" and $title <> "Download File" and $title <> "Galeri Gambar" and $title <> "Video File" and strlen($title) < 50) {
+        <li class="dropdown"><a href="#" class="<?php if ($title <> "Tentang Kami" and $title <> "Wakaf" and $title <> "Program Lazis" and $title <> "Kontak" and $title <> "Lazismu | Home" and strlen($title) < 50) {
                                                   echo "active";
-                                                } ?>  "><span>Portofolio</span> <i class="bi bi-chevron-down"></i></a>
+                                                } ?>  "><span>Info</span> <i class="bi bi-chevron-down"></i></a>
           <ul>
             <?php foreach ($menu_layanan as $menu_layanan) { ?>
               <li><a href="<?php echo base_url('berita/layanan/' . $menu_layanan['slug_berita']) ?>"><?php echo $menu_layanan['judul_berita'] ?></a></li>
             <?php } ?>
           </ul>
         </li>
-
-        <li class="dropdown"><a href="#" class="<?php if ($title == "Galeri Gambar" or $title == "Video File") {
-                                                  echo "active";
-                                                } ?>"><span>Galeri &amp; Video</span> <i class="bi bi-chevron-down"></i></a>
-          <ul>
-            <li><a href="<?php echo base_url('galeri') ?>">Galeri Gambar</a></li>
-            <li><a href="<?php echo base_url('video') ?>">Galeri Video</a></li>
-          </ul>
-        </li>
-        <li><a class="nav-link scrollto <?php if ($title == "Download File") {
-                                          echo "active";
-                                        } ?>" href="<?php echo base_url('download') ?>">Download</a></li>
         <li><a class="nav-link scrollto <?php if ($title == "Kontak Kami") {
                                           echo "active";
                                         } ?>" href="<?php echo base_url('kontak') ?>">Kontak</a></li>
+        <li><a class="nav-link scrollto <?php if ($title == "Login") {
+                                          echo "active";
+                                        } ?>" href="<?php echo base_url('login') ?>">Login</a></li>
       </ul>
       <i class="bi bi-list mobile-nav-toggle"></i>
     </nav><!-- .navbar -->

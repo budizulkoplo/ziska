@@ -14,11 +14,11 @@ $menu_profil  = $menu->profil();
 $menu_layanan  = $menu->layanan();
 ?>
 <!-- ======= Footer ======= -->
-<div style="text-align: right; color:#555555;" class="container">
+<!-- <div style="text-align: right; color:#555555;" class="container">
   <p>
     <stong>| <span style="color:#F6B10E;">Membangun Harapan</span> |</stong>
   </p>
-</div>
+</div> -->
 <footer id="footer">
   <div class="footer-top">
     <div class="container">
@@ -58,8 +58,8 @@ $menu_layanan  = $menu->layanan();
 
   <div class="container">
     <div class="copyright">
-      &copy; Copyright <strong><span>Mentari Land Property</span></strong>. All Rights Reserved<br>
-      Part of the company <strong><span><a href="https://mentarimultitrada.com">PT. Mentari Multi Trada</a></span></strong>
+      &copy; Copyright <strong><span>Lazismu Kaliwungu</span></strong>. All Rights Reserved<br>
+      Part of the company <strong><span><a href="https://lazismukaliwungu.com">LAZISMU</a></span></strong>
     </div>
 
   </div>

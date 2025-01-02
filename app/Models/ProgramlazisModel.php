@@ -19,6 +19,13 @@ class ProgramLazisModel extends Model
         'targetdonasi', 
         'terkumpul'
     ];
+
+    public function slider()
+    {
+        return $this->where('tglselesai >=', date('Y-m-d'))
+                    ->orderBy('tglmulai', 'ASC')
+                    ->findAll(); // Mengambil semua program yang aktif berdasarkan tanggal selesai
+    }
     
     // Mengaktifkan timestamp jika diperlukan
     protected $useTimestamps    = false;  // Jika Anda ingin menggunakan timestamp otomatis, set true
