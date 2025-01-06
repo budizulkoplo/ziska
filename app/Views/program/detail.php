@@ -29,8 +29,17 @@
       </div>
     </div>
     <div class="card-footer text-center">
-    <a href="<?= base_url('/login') . '?redirect=' . urlencode(base_url('admin/programlazis/donate/' . $program['idprogram'])) ?>" class="btn btn-success w-100 mt-4">
-    <i class="fa fa-eye"></i> Lihat Program
+    <?php if (session()->get('username')): // Cek apakah pengguna sudah login ?>
+        <a href="<?= base_url('admin/programlazis/donate/' . $program['idprogram']) ?>" class="btn btn-success w-100 mt-4">
+            <i class="fa fa-eye"></i> Lihat Program
+        </a>
+    <?php else: ?>
+        <a href="<?= base_url('/login') . '?redirect=' . urlencode(base_url('admin/programlazis/donate/' . $program['idprogram'])) ?>" class="btn btn-success w-100 mt-4">
+            <i class="fa fa-eye"></i> Lihat Program
+        </a>
+    <?php endif; ?>
+</div>
+
 </a>
     </div>
   </section><!-- End Program Detail Section -->

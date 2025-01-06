@@ -73,17 +73,31 @@
     }
 
     function bayarZakat(event) {
-    event.preventDefault(); 
-    const baseUrl = '<?= base_url() ?>';
+        event.preventDefault(); // Mencegah default action
 
-    const form = document.getElementById('zakatForm');
-    const jumlah = form.querySelector('input[name="jumlahZakat"]').value;
-    const jenis = form.querySelector('input[name="jenis"]').value;
+        const baseUrl = '<?= base_url() ?>'; // Base URL
 
-    const redirectUrl = `${baseUrl}/admin/transaksi/zakat?jumlah=${jumlah}&jenis=${jenis}`;
-    window.location.href = redirectUrl;
+        // Ambil form dan inputan
+        const form = document.getElementById('zakatForm');
+        const jumlah = form.querySelector('input[name="jumlahZakat"]').value;
+        const jenis = form.querySelector('input[name="jenis"]').value;
+
+        // URL tujuan untuk redirect
+        const redirectUrl = `${baseUrl}/admin/transaksi/zakat?jumlah=${jumlah}&jenis=${jenis}`;
+
+        // Cek apakah pengguna sudah login
+        const isLoggedIn = '<?= session()->get('isLoggedIn') ?>'; // Cek session login (di PHP)
+
+        if (isLoggedIn === '1') {
+            // Jika sudah login, redirect langsung ke halaman bayar zakat
+            window.location.href = redirectUrl;
+        } else {
+            // Jika belum login, arahkan ke halaman login dengan parameter redirect
+            const redirectUrl = `admin/transaksi/zakat?jumlah=${jumlah}&jenis=${jenis}`;
+            window.location.href = `<?= base_url('login') ?>?redirect=${encodeURIComponent(redirectUrl)}`;
+        }
     }
-
+ 
 </script>
 
 
