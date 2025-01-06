@@ -74,7 +74,7 @@ $site         = $konfigurasi->listing();
           </div>
         </div>
         <!-- menambahkan parameter redirect jika ada -->
-    <input type="hidden" name="redirect" value="<?php echo isset($_GET['redirect']) ? $_GET['redirect'] : ''; ?>">
+    <input type="text" name="redirect" value="<?php echo isset($_GET['redirect']) ? $_GET['redirect'] : ''; ?>">
 
         <div class="row">
           <div class="col-8">

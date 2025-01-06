@@ -32,32 +32,24 @@ $menu_layanan  = $menu->layanan();
     <!-- <h1 class="logo me-auto"><a href="index.html">Medicio</a></h1> -->
 
     <nav id="navbar" class="navbar order-last order-lg-0">
-      <ul>
-        <li><a class="nav-link scrollto <?php if ($title =="Lazismu | Home") {
-                                          echo "active";
-                                        } ?>" href="<?php echo base_url() ?>">Home</a></li>
-        <li><a class="nav-link scrollto <?php if ($title == "Tentang Kami") {
-                                          echo "active";
-                                        } ?> " href="<?php echo base_url() ?>/berita/profil/about"><span>LAZISMU</span> </i></a>
-        </li>
-        <li><a class="nav-link scrollto <?php if ($title == "Data Wakaf") {
-                                          echo "active";
-                                        } ?>" href="<?php echo base_url('wakaf') ?>">WAKAF</a></li>
-         <li><a class="nav-link scrollto <?php if ($title == "Program LAZIS") {
-                                          echo "active";
-                                        } ?>" href="<?php echo base_url('program') ?>">PROGRAM</a></li>
-        <li><a class="nav-link scrollto <?php if ($title == "Berita LAZISMU") {
-                                          echo "active";
-                                        } ?>" href="<?php echo base_url('berita') ?>">Berita</a></li>
-        <li><a class="nav-link scrollto <?php if ($title == "Kontak Kami") {
-                                          echo "active";
-                                        } ?>" href="<?php echo base_url('kontak') ?>">Kontak</a></li>
-        <li><a class="nav-link scrollto <?php if ($title == "Login") {
-                                          echo "active";
-                                        } ?>" href="<?php echo base_url('login') ?>">Login</a></li>
-      </ul>
-      <i class="bi bi-list mobile-nav-toggle"></i>
-    </nav><!-- .navbar -->
+  <ul>
+    <li><a class="nav-link scrollto <?= $title == 'Lazismu | Home' ? 'active' : '' ?>" href="<?= base_url() ?>">Home</a></li>
+    <li><a class="nav-link scrollto <?= $title == 'Tentang Kami' ? 'active' : '' ?>" href="<?= base_url('/berita/profil/about') ?>">LAZISMU</a></li>
+    <li><a class="nav-link scrollto <?= $title == 'Data Wakaf' ? 'active' : '' ?>" href="<?= base_url('wakaf') ?>">WAKAF</a></li>
+    <li><a class="nav-link scrollto <?= $title == 'Program LAZIS' ? 'active' : '' ?>" href="<?= base_url('program') ?>">PROGRAM</a></li>
+    <li><a class="nav-link scrollto <?= $title == 'Berita LAZISMU' ? 'active' : '' ?>" href="<?= base_url('berita') ?>">Berita</a></li>
+    <li><a class="nav-link scrollto <?= $title == 'Kontak Kami' ? 'active' : '' ?>" href="<?= base_url('kontak') ?>">Kontak</a></li>
+    <li><a class="nav-link scrollto <?= $title == 'Login' ? 'active' : '' ?>" href="<?= base_url('login') ?>">Login </a></li>
+
+    <li>&nbsp;&nbsp;
+    <button onclick="location.href='<?= base_url('kalkulatorzakat') ?>'" class="btn btn-success">
+      <i class="nav-icon fas fa-calculator"></i> Kalkulator Zakat
+    </button>
+    </li>
+  </ul>
+  <button class="bi bi-list mobile-nav-toggle" aria-label="Toggle navigation"></button>
+</nav>
+<!-- .navbar -->
 
   </div>
 </header><!-- End Header -->

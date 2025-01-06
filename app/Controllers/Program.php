@@ -30,7 +30,7 @@ class Program extends BaseController
     // Menampilkan detail program berdasarkan ID
     public function detail($idprogram)
     {
-        $m_program = new Program_model();
+        $m_program = new ProgramLazisModel();
         $program = $m_program->find($idprogram); // Mengambil data program berdasarkan ID
 
         if (!$program) {

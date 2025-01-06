@@ -44,12 +44,12 @@ $menu_layanan  = $menu->layanan();
         </div>
 
         <div class="col-lg-6 col-md-6 footer-links">
-          <h4>Portofolio</h4>
+          <!-- <h4>Portofolio</h4>
           <ul>
             <?php foreach ($menu_layanan as $menu_layanan) { ?>
               <li><i class="bx bx-chevron-right"></i> <a href="<?php echo base_url('berita/layanan/' . $menu_layanan['slug_berita']) ?>"><?php echo $menu_layanan['judul_berita'] ?></a></li>
             <?php } ?>
-          </ul>
+          </ul> -->
         </div>
 
       </div>
