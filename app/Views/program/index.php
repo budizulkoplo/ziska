@@ -39,7 +39,7 @@ function custom_word_limiter($text, $limit = 20) {
               <div class="card-body">
                 <h5 class="card-title"><?php echo $program['judulprogram']; ?></h5>
                 <p class="card-text"><?php echo custom_word_limiter($program['deskripsiprogram'], 20); ?></p>
-                <a href="<?php echo base_url('program/detail/' . $program['idprogram']); ?>" class="btn btn-primary">Detail Program</a>
+                <a href="<?php echo base_url('program/detail/' . $program['idprogram']); ?>" class="btn btn-success">Detail Program</a>
               </div>
             </div>
           </div>

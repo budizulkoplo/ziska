@@ -51,7 +51,7 @@
 
       <div class="section-title">
         <h2>Masih Bingung Untuk Berzakat?</h2>
-        <p> <?php echo tagline() ?> <a href="<?php echo base_url() ?>/berita/profil/about-us">Read More..</a></p>
+        <p> <?php echo tagline() ?> <a href="<?php echo base_url() ?>/berita/profil/about">Read More..</a></p>
       </div>
 
 

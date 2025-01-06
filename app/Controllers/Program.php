@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\Program_model;
+use App\Models\ProgramLazisModel;
 
 class Program extends BaseController
 {
@@ -11,8 +11,8 @@ class Program extends BaseController
     {
         helper('word');
 
-        $m_program = new Program_model();
-        $programs = $m_program->findAll(); // Mengambil semua data program
+        $m_program = new ProgramLazisModel();
+        $programs = $m_program->slider(); // Mengambil semua data program
 
         // Data yang akan dikirim ke view
         $data = [

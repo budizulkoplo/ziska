@@ -46,18 +46,31 @@
     <label class="col-3">URL Google Maps</label>
     <div class="col-9">
         <input type="url" name="urlmaps" id="urlmaps" class="form-control" value="<?= $wakaf['urlmaps'] ?>" required>
-        <?php if (!empty($wakaf['urlmaps'])): ?>
-            <div class="mt-2">
-                <iframe 
-                    src="<?= $wakaf['urlmaps'] ?>" 
-                    width="100%" 
-                    height="300" 
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
+        <?php if (!empty($wakaf['koordinat'])): ?>
+            <?php
+              // Split koordinat menjadi latitude dan longitude
+              $coordinates = explode(',', $wakaf['koordinat']);
+              $latitude = trim($coordinates[0]);
+              $longitude = trim($coordinates[1]);
+              $mapUrl = "https://maps.google.com/maps?q={$latitude},{$longitude}&amp;ie=UTF8&amp;iwloc=&amp;output=embed";
+            ?>
+            <div class="w-100">
+              <hr>
+              <iframe 
+                id="mapcanvas" 
+                title="Lokasi Wakaf" 
+                src="<?php echo $mapUrl; ?>" 
+                width="100%" 
+                height="350px" 
+                frameborder="0" 
+                marginwidth="0" 
+                marginheight="0" 
+                scrolling="no">
+              </iframe>
             </div>
-        <?php endif; ?>
+          <?php else: ?>
+            <p>Koordinat tidak tersedia.</p>
+          <?php endif; ?>
     </div>
 </div>
 

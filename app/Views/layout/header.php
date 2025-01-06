@@ -40,23 +40,15 @@ $menu_layanan  = $menu->layanan();
                                           echo "active";
                                         } ?> " href="<?php echo base_url() ?>/berita/profil/about"><span>LAZISMU</span> </i></a>
         </li>
-        <li><a class="nav-link scrollto <?php if ($title == "Wakaf") {
+        <li><a class="nav-link scrollto <?php if ($title == "Data Wakaf") {
                                           echo "active";
                                         } ?>" href="<?php echo base_url('wakaf') ?>">WAKAF</a></li>
-         <li><a class="nav-link scrollto <?php if ($title == "Program Lazis") {
+         <li><a class="nav-link scrollto <?php if ($title == "Program LAZIS") {
                                           echo "active";
                                         } ?>" href="<?php echo base_url('program') ?>">PROGRAM</a></li>
-
-
-        <li class="dropdown"><a href="#" class="<?php if ($title <> "Tentang Kami" and $title <> "Wakaf" and $title <> "Program Lazis" and $title <> "Kontak" and $title <> "Lazismu | Home" and strlen($title) < 50) {
-                                                  echo "active";
-                                                } ?>  "><span>Info</span> <i class="bi bi-chevron-down"></i></a>
-          <ul>
-            <?php foreach ($menu_layanan as $menu_layanan) { ?>
-              <li><a href="<?php echo base_url('berita/layanan/' . $menu_layanan['slug_berita']) ?>"><?php echo $menu_layanan['judul_berita'] ?></a></li>
-            <?php } ?>
-          </ul>
-        </li>
+        <li><a class="nav-link scrollto <?php if ($title == "Berita LAZISMU") {
+                                          echo "active";
+                                        } ?>" href="<?php echo base_url('berita') ?>">Berita</a></li>
         <li><a class="nav-link scrollto <?php if ($title == "Kontak Kami") {
                                           echo "active";
                                         } ?>" href="<?php echo base_url('kontak') ?>">Kontak</a></li>

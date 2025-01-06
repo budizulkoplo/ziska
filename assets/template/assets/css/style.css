@@ -596,7 +596,7 @@ h6 {
   line-height: 0;
   width: auto;
   height: auto;
-  background: rgba(63, 187, 192, 0.8);
+  background: #fc8c04;
   border-radius: 50px;
   transition: 0.3s;
   color: rgba(255, 255, 255, 0.5);
@@ -722,7 +722,7 @@ section {
 --------------------------------------------------------------*/
 .breadcrumbs {
   padding: 20px 0;
-  background-color: #ecf8f9;
+  background-color: #f1f1f1;
   min-height: 40px;
   margin-top: 120px;
 }

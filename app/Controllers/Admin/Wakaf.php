@@ -200,9 +200,11 @@ class Wakaf extends BaseController
         $m_wakaf->update($idwakaf, $data);
 
         // Upload foto baru jika ada
-        if ($this->request->getFile('foto')->isValid()) {
+        $foto = $this->request->getFile('foto');
+        if ($foto && $foto->isValid() && !$foto->hasMoved()) {
             $this->uploadFoto($m_fotowakaf, $idwakaf);
         }
+
 
         $this->session->setFlashdata('sukses', 'Wakaf berhasil diperbarui');
         return redirect()->to(base_url('admin/wakaf'));

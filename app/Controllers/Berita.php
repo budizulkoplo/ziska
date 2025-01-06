@@ -25,7 +25,6 @@ class Berita extends BaseController
 			'keywords'		=> 'Berita ' . $konfigurasi['namaweb'],
 			'berita'		=> $berita,
 			'content'		=> 'berita/index',
-			'slider'		=> $slider
 		];
 		echo view('layout/wrapper', $data);
 	}
@@ -44,7 +43,6 @@ class Berita extends BaseController
 		$data = [
 			'id_berita'	=> $berita['id_berita'],
 			'hits'		=> $berita['hits'] + 1,
-			'slider'		=> $slider
 		];
 		$m_berita->edit($data);
 		// Update hits
@@ -54,7 +52,6 @@ class Berita extends BaseController
 			'description'	=> $berita['judul_berita'],
 			'keywords'		=> $berita['judul_berita'],
 			'berita'		=> $berita,
-			'slider'		=> $slider,
 			'content'		=> 'berita/read'
 		];
 		echo view('layout/wrapper', $data);
@@ -109,7 +106,7 @@ class Berita extends BaseController
 			'description'	=> $berita['judul_berita'],
 			'keywords'		=> $berita['judul_berita'],
 			'berita'		=> $berita,
-			'slider'		=> $slider,
+
 			'content'		=> 'berita/layanan'
 		];
 		echo view('layout/wrapper', $data);
