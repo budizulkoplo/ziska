@@ -11,12 +11,12 @@ $m_dasbor = new Dasbor_model();
 <div class="row">
   <div class="col-12 col-sm-6 col-md-3">
     <div class="info-box">
-      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-newspaper"></i></span>
+      <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">Berita/Profil/Layanan</span>
+        <span class="info-box-text">Muzaki</span>
         <span class="info-box-number">
-          <?= angka($m_dasbor->berita()) ?>
+          <?= angka($m_dasbor->muzaki()) ?>
           <small>Konten</small>
         </span>
       </div>
@@ -27,26 +27,39 @@ $m_dasbor = new Dasbor_model();
   <!-- fix for small devices only -->
   <div class="clearfix hidden-md-up"></div>
 
+  <!-- /.col -->
   <div class="col-12 col-sm-6 col-md-3">
     <div class="info-box mb-3">
-      <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
+      <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-lock"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">Staff</span>
-        <span class="info-box-number"><?= angka($m_dasbor->staff()) ?></span>
+        <span class="info-box-text">Pengguna Website</span>
+        <span class="info-box-number"><?= angka($m_dasbor->user()) ?></span>
       </div>
       <!-- /.info-box-content -->
     </div>
     <!-- /.info-box -->
   </div>
-  <!-- /.col -->
   <div class="col-12 col-sm-6 col-md-3">
     <div class="info-box mb-3">
-      <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-lock"></i></span>
+      <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-check-alt"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">Pengguna Website</span>
-        <span class="info-box-number"><?= angka($m_dasbor->user()) ?></span>
+        <span class="info-box-text">Transaksi Sukses</span>
+        <span class="info-box-number">Rp. <?= angka($m_dasbor->suksestransaksi()) ?></span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check-alt"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Transaksi Pending</span>
+        <span class="info-box-number">Rp. <?= angka($m_dasbor->pendingtransaksi()) ?></span>
       </div>
       <!-- /.info-box-content -->
     </div>
@@ -60,11 +73,11 @@ $m_dasbor = new Dasbor_model();
 <!-- /.col -->
   <div class="col-12 col-sm-6 col-md-3">
     <div class="info-box mb-3">
-      <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-download"></i></span>
+      <span class="info-box-icon bg-success elevation-1"><i class="fas fa-home"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">File Download</span>
-        <span class="info-box-number"><?= angka($m_dasbor->download()) ?></span>
+        <span class="info-box-text">Wakaf</span>
+        <span class="info-box-number"><?= angka($m_dasbor->wakaf()) ?></span>
       </div>
       <!-- /.info-box-content -->
     </div>
@@ -73,12 +86,12 @@ $m_dasbor = new Dasbor_model();
   <!-- /.col -->
   <div class="col-12 col-sm-6 col-md-3">
     <div class="info-box">
-      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-images"></i></span>
+      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-newspaper"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">Galeri &amp; Banner</span>
+        <span class="info-box-text">Program Lazis</span>
         <span class="info-box-number">
-          <?= angka($m_dasbor->galeri()) ?>
+          <?= angka($m_dasbor->programlazis()) ?>
           <small>Konten</small>
         </span>
       </div>
@@ -87,35 +100,7 @@ $m_dasbor = new Dasbor_model();
     <!-- /.info-box -->
   </div>
   <!-- /.col -->
-  <div class="col-12 col-sm-6 col-md-3">
-    <div class="info-box mb-3">
-      <span class="info-box-icon bg-danger elevation-1"><i class="fab fa-youtube"></i></span>
 
-      <div class="info-box-content">
-        <span class="info-box-text">Video Youtube</span>
-        <span class="info-box-number"><?= angka($m_dasbor->video()) ?></span>
-      </div>
-      <!-- /.info-box-content -->
-    </div>
-    <!-- /.info-box -->
-  </div>
-  <!-- /.col -->
-
-  <!-- fix for small devices only -->
-  <div class="clearfix hidden-md-up"></div>
-
-  <div class="col-12 col-sm-6 col-md-3">
-    <div class="info-box mb-3">
-      <span class="info-box-icon bg-success elevation-1"><i class="fas fa-tags"></i></span>
-
-      <div class="info-box-content">
-        <span class="info-box-text">Kategori Berita</span>
-        <span class="info-box-number"><?= angka($m_dasbor->kategori()) ?></span>
-      </div>
-      <!-- /.info-box-content -->
-    </div>
-    <!-- /.info-box -->
-  </div>
 
 </div>
 <!-- /.row -->

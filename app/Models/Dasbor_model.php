@@ -23,15 +23,55 @@ class Dasbor_model extends Model
 
         return $query->getNumRows();
     }
+    // transaksi
+    public function suksestransaksi()
+    {
+        $builder = $this->db->table('transaksi');
+        $builder->selectSum('nominal');
+        $builder->where('status', 'sukses');
+        $query = $builder->get();
+
+        return $query->getRow()->nominal; // Mengembalikan total nominal
+    }
+
+        // transaksi
+        public function pendingtransaksi()
+        {
+            $builder = $this->db->table('transaksi');
+            $builder->selectSum('nominal');
+            $builder->where('status !=', 'sukses'); 
+            $query = $builder->get();
+    
+            return $query->getRow()->nominal; // Mengembalikan total nominal
+        }
 
     // client
-    public function client()
+    public function muzaki()
     {
-        $builder = $this->db->table('client');
+        $builder = $this->db->table('muzaki');
         $query   = $builder->get();
 
         return $query->getNumRows();
     }
+
+    public function wakaf()
+    {
+        $builder = $this->db->table('wakaf');
+        $query   = $builder->get();
+
+        return $query->getNumRows();
+    }
+
+    public function programlazis()
+    {
+        $builder = $this->db->table('programlazis');
+        $builder->where('tglselesai >=', date('Y-m-d')); // Kondisi tglselesai >= hari ini
+        $builder->orderBy('tglmulai', 'ASC');            // Urutkan berdasarkan tglmulai ASC
+        $query = $builder->get();
+    
+        return $query->getNumRows(); // Mengembalikan jumlah data
+    }
+    
 
     // galeri
     public function galeri()
