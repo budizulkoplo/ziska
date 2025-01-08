@@ -11,9 +11,8 @@
         <div class="carousel-item<?php if ($noslide == 1) {
                                     echo ' active';
                                   } ?>" style="background-image: url(<?php echo base_url('assets/upload/programlazis/' . $program['fotoprogram']) ?>)">
-          <br><br><br><br><br><br>
           <span style="background-color: rgba(255, 255, 255, 0.5);">
-            <div class="container" style="max-width: 90%; text-align: left; padding-left: 2%; padding-right: 2%; text-shadow: 8px 8px 8px rgba(0,0,0,0.3);">
+            <div class="isibanner col-sm-12" style="text-align: left; padding-left: 2%; padding-right: 2%; text-shadow: 8px 8px 8px rgba(0,0,0,0.3);">
 
               <h2><?php echo $program['judulprogram']; ?></h2>
               
