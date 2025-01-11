@@ -34,6 +34,66 @@ class Dasbor_model extends Model
         return $query->getRow()->nominal; // Mengembalikan total nominal
     }
 
+    public function listTahunTransaksi()
+{
+    $session = \Config\Services::session(); // Ambil instance session
+    $id_muzaki = $session->get('id_user'); // Ambil ID muzaki dari session
+
+    // Cari noanggota berdasarkan id_muzaki
+    $builder = $this->db->table('muzaki'); // Sesuaikan nama tabel muzaki Anda
+    $builder->select('noanggota');
+    $builder->where('id', $id_muzaki); // Ambil data berdasarkan id_muzaki
+    $query = $builder->get();
+    $noanggota = $query->getRow()->noanggota ?? null; // Ambil noanggota atau null jika tidak ada
+
+    if (!$noanggota) {
+        // Jika noanggota tidak ditemukan, kembalikan 0
+        return 0;
+    }
+    
+    $session = \Config\Services::session(); // Ambil instance session
+    $id_muzaki = $session->get('id_user'); // Ambil ID muzaki dari session
+
+    $builder = $this->db->table('transaksi');  // Pastikan nama tabelnya benar
+    $builder->select('YEAR(tgltransaksi) as tahun');
+    $builder->where('muzaki', $noanggota); // Memfilter berdasarkan ID muzaki
+    $builder->groupBy('YEAR(tgltransaksi)'); // Mengelompokkan berdasarkan tahun
+    $builder->orderBy('tahun', 'DESC'); // Mengurutkan tahun secara menurun
+
+    $query = $builder->get();
+
+    return $query->getResult(); // Mengembalikan hasil berupa array tahun transaksi
+}
+
+public function sumTransaksiPerTahun($tahun)
+{
+    $session = \Config\Services::session(); // Ambil instance session
+    $id_muzaki = $session->get('id_user'); // Ambil ID muzaki dari session
+
+    // Cari noanggota berdasarkan id_muzaki
+    $builder = $this->db->table('muzaki'); // Sesuaikan nama tabel muzaki Anda
+    $builder->select('noanggota');
+    $builder->where('id', $id_muzaki); // Ambil data berdasarkan id_muzaki
+    $query = $builder->get();
+    $noanggota = $query->getRow()->noanggota ?? null; // Ambil noanggota atau null jika tidak ada
+
+    if (!$noanggota) {
+        // Jika noanggota tidak ditemukan, kembalikan 0
+        return 0;
+    }
+
+    $builder = $this->db->table('transaksi');  // Pastikan nama tabelnya benar
+    $builder->selectSum('nominal');
+    $builder->where('status', 'sukses');
+    $builder->where('YEAR(tgltransaksi)', $tahun); // Memfilter berdasarkan tahun
+    $builder->where('muzaki', $noanggota); // Memfilter berdasarkan ID muzaki
+    
+    $query = $builder->get();
+    return $query->getRow()->nominal ?: 0; // Mengembalikan total nominal (atau 0 jika null)
+}
+
+
+
         // transaksi
         public function pendingtransaksi()
         {
