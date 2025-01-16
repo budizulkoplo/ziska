@@ -46,6 +46,12 @@ class Mustahik_model extends Model
                     ->first();
     }
 
+    public function getMustahikByRanting($idranting)
+{
+    return $this->where('idranting', $idranting)
+                ->findAll();
+}
+
     /**
      * Fungsi untuk menambahkan data mustahik
      */

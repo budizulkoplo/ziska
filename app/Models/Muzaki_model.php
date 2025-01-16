@@ -19,7 +19,8 @@ class Muzaki_model extends Model
         'alamat',
         'nohp',
         'keterangan',
-        'foto'
+        'foto',
+        'idranting' // Menambahkan idranting
     ];
 
     protected $useTimestamps = true; // Jika menggunakan kolom created_at & updated_at
@@ -27,10 +28,16 @@ class Muzaki_model extends Model
     protected $updatedField  = 'updated_at';
 
     /**
-     * Fungsi untuk mengambil semua data Muzaki
+     * Fungsi untuk mengambil semua data Muzaki dengan mempertimbangkan idranting
+     * @return array
      */
-    public function getAllMuzaki()
+    public function getAllMuzaki($idranting = null)
     {
+        if ($idranting && $idranting != 1) {
+            // Jika idranting bukan 1 (All), filter berdasarkan idranting
+            return $this->where('idranting', $idranting)->findAll();
+        }
+        // Jika idranting 1 (All), tampilkan semua data
         return $this->findAll();
     }
 
@@ -44,11 +51,21 @@ class Muzaki_model extends Model
         return $this->where(['id' => $id])->first();
     }
 
-    // Fungsi untuk mengambil data Muzaki berdasarkan username
-public function getMuzakiByUsername($username)
-{
-    return $this->where(['username' => $username])->first();
-}
+    /**
+     * Fungsi untuk mengambil data Muzaki berdasarkan username
+     * @param string $username
+     * @return array|null
+     */
+
+    public function getMuzakiByRanting($idranting)
+    {
+        return $this->where('idranting', $idranting)->findAll(); // Ambil data muzaki sesuai dengan idranting
+    }
+
+    public function getMuzakiByUsername($username)
+    {
+        return $this->where(['username' => $username])->first();
+    }
 
     /**
      * Fungsi untuk menambahkan data Muzaki

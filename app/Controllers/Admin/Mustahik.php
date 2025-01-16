@@ -23,22 +23,30 @@ class Mustahik extends BaseController
 {
     checklogin();
 
-    // Ambil data mustahik
-    $mustahikData = $this->mustahikModel->getAllmustahik();
+    // Ambil idranting dari session
+    $idranting = $this->session->get('idranting');
 
-    // Ambil data ranting
+    // Ambil data mustahik berdasarkan idranting
+    if ($idranting == 1) { // Jika idranting 1 (All), ambil semua data
+        $mustahikData = $this->mustahikModel->getAllmustahik();
+    } else { // Jika idranting selain 1, ambil data sesuai idranting
+        $mustahikData = $this->mustahikModel->getMustahikByRanting($idranting);
+    }
+
+    // Ambil data ranting untuk dropdown atau referensi
     $rantingModel = new \App\Models\Ranting_model();
     $ranting = $rantingModel->findAll();
 
     $data = [
         'title'    => 'Daftar Mustahik',
         'mustahik' => $mustahikData,
-        'ranting'  => $ranting, // Kirim data ranting ke view
+        'ranting'  => $ranting,
         'content'  => 'admin/mustahik/index',
     ];
 
     echo view('admin/layout/wrapper', $data);
 }
+
 
 
     /**

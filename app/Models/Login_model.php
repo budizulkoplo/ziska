@@ -15,13 +15,13 @@ class Login_model extends Model
         // Menggunakan query UNION untuk mengambil data dari users dan muzaki
         $db = \Config\Database::connect();
         $builder = $db->table('users')
-            ->select('id_user as id, nama, username, password, gambar as foto, akses_level')
+            ->select('id_user as id, nama, username, password, gambar as foto, akses_level, idranting')
             ->where('username', $username)
             ->where('password', sha1($password));  // Pastikan menggunakan enkripsi password yang sesuai
 
         // UNION dengan tabel muzaki
         $builder2 = $db->table('muzaki')
-            ->select('id as id, nama, username, password, foto, "muzaki" as akses_level')
+            ->select('id as id, nama, username, password, foto, "muzaki" as akses_level, idranting')
             ->where('username', $username)
             ->where('password', sha1($password));  // Pastikan menggunakan enkripsi password yang sesuai
 

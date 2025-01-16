@@ -20,80 +20,98 @@ class Muzaki extends BaseController
      * Menampilkan daftar Muzaki
      */
     public function index()
-    {
-        checklogin();
+{
+    checklogin();
+
+    // Ambil idranting dari session
+    $idranting = $this->session->get('idranting');
+
+    // Ambil data muzaki berdasarkan idranting
+    if ($idranting == 1) { // Jika idranting 1 (All), ambil semua data
         $muzakiData = $this->muzakiModel->getAllMuzaki();
-
-        $data = [
-            'title'   => 'Daftar Muzaki',
-            'muzaki'  => $muzakiData,
-            'content' => 'admin/muzaki/index',
-        ];
-
-        echo view('admin/layout/wrapper', $data);
+    } else { // Jika idranting selain 1, ambil data sesuai idranting
+        $muzakiData = $this->muzakiModel->getMuzakiByRanting($idranting);
     }
+
+    // Ambil data ranting untuk dropdown atau referensi
+    $rantingModel = new \App\Models\Ranting_model();
+    $ranting = $rantingModel->findAll();
+
+    $data = [
+        'title'   => 'Daftar Muzaki',
+        'muzaki'  => $muzakiData,
+        'ranting' => $ranting,
+        'content' => 'admin/muzaki/index',
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
 
     /**
      * Menambahkan data Muzaki
      */
     public function add()
-    {
-        checklogin();
+{
+    checklogin();
 
-        // Validasi input
-        if ($this->request->getMethod() === 'post' && $this->validate([
-            'noanggota' => 'required',
-            'username'  => 'required',
-            'password'  => 'required',
-            'nama'      => 'required',
-            'nik'       => 'required',
-            'alamat'    => 'required',
-            'nohp'      => 'required',
-            'foto'      => 'uploaded[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,4096]',
-        ])) {
-            // Proses upload file foto
-            $fileFoto = $this->request->getFile('foto');
-            $namaFoto = '';
+    // Ambil data ranting
+    $rantingModel = new \App\Models\Ranting_model();
+    $rantingData = $rantingModel->findAll();  // Ambil semua data ranting
 
-            // Cek apakah file berhasil diunggah
-            if ($fileFoto->isValid() && !$fileFoto->hasMoved()) {
-                $namaFoto = $fileFoto->getRandomName(); // Generate nama unik
-                $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto); // Simpan file di folder
+    // Validasi input
+    if ($this->request->getMethod() === 'post' && $this->validate([
+        'noanggota' => 'required',
+        'username'  => 'required',
+        'password'  => 'required',
+        'nama'      => 'required',
+        'nik'       => 'required',
+        'alamat'    => 'required',
+        'nohp'      => 'required',
+        'foto'      => 'uploaded[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,4096]',
+        'idranting' => 'required|is_not_unique[ranting.idranting]', // Validasi untuk idranting
+    ])) {
+        // Proses upload file foto
+        $fileFoto = $this->request->getFile('foto');
+        $namaFoto = '';
 
-            } else {
-                // Jika gagal upload, kembalikan ke halaman add dengan error
-                $this->session->setFlashdata('error', 'Gagal mengupload foto: ' . $fileFoto->getErrorString());
-                return redirect()->back()->withInput();
-            }
-
-            // Simpan data ke database
-            $this->muzakiModel->addMuzaki([
-                'noanggota'    => $this->request->getPost('noanggota'),
-                'username'     => $this->request->getPost('username'),
-                'password'     => sha1($this->request->getPost('password')),
-                'tipeanggota'  => $this->request->getPost('tipeanggota'),
-                'nama'         => $this->request->getPost('nama'),
-                'nik'          => $this->request->getPost('nik'),
-                'alamat'       => $this->request->getPost('alamat'),
-                'nohp'         => $this->request->getPost('nohp'),
-                'keterangan'   => $this->request->getPost('keterangan'),
-                'foto'         => $namaFoto, // Simpan nama file foto ke database
-            ]);
-
-            // Tampilkan notifikasi sukses
-            $this->session->setFlashdata('sukses', 'Data berhasil ditambahkan');
-            return redirect()->to(base_url('admin/muzaki'));
+        // Cek apakah file berhasil diunggah
+        if ($fileFoto->isValid() && !$fileFoto->hasMoved()) {
+            $namaFoto = $fileFoto->getRandomName(); // Generate nama unik
+            $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto); // Simpan file di folder
         }
 
-        // Jika validasi gagal, kembalikan ke halaman tambah dengan error
-        $data = [
-            'title'   => 'Tambah Data Muzaki',
-            'content' => 'admin/muzaki/add',
-            'validation' => $this->validator, // Kirim error validasi ke view
-        ];
+        // Simpan data ke database
+        $this->muzakiModel->addMuzaki([
+            'noanggota'    => $this->request->getPost('noanggota'),
+            'username'     => $this->request->getPost('username'),
+            'password'     => sha1($this->request->getPost('password')),
+            'tipeanggota'  => $this->request->getPost('tipeanggota'),
+            'nama'         => $this->request->getPost('nama'),
+            'nik'          => $this->request->getPost('nik'),
+            'alamat'       => $this->request->getPost('alamat'),
+            'nohp'         => $this->request->getPost('nohp'),
+            'keterangan'   => $this->request->getPost('keterangan'),
+            'foto'         => $namaFoto, // Simpan nama file foto ke database
+            'idranting'    => $this->request->getPost('idranting'), // Simpan idranting ke database
+        ]);
 
-        echo view('admin/layout/wrapper', $data);
+        // Tampilkan notifikasi sukses
+        $this->session->setFlashdata('sukses', 'Data berhasil ditambahkan');
+        return redirect()->to(base_url('admin/muzaki'));
     }
+
+    // Jika validasi gagal, kembalikan ke halaman tambah dengan error
+    $data = [
+        'title'   => 'Tambah Data Muzaki',
+        'content' => 'admin/muzaki/add',
+        'validation' => $this->validator, // Kirim error validasi ke view
+        'ranting' => $rantingData, // Kirim data ranting ke view
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
 
     /**
      * Menampilkan halaman edit data Muzaki
@@ -110,6 +128,10 @@ class Muzaki extends BaseController
         throw new \CodeIgniter\Exceptions\PageNotFoundException('Muzaki tidak ditemukan');
     }
 
+    // Ambil data ranting
+    $rantingModel = new \App\Models\Ranting_model();
+    $rantingData = $rantingModel->findAll();  // Ambil semua data ranting
+
     // Validasi input dan simpan data jika ada
     if ($this->request->getMethod() === 'post' && $this->validate([
         'noanggota' => 'required',
@@ -119,6 +141,7 @@ class Muzaki extends BaseController
         'alamat'    => 'required',
         'nohp'      => 'required',
         'foto'      => 'is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,9096]', // Foto opsional
+        'idranting' => 'required|is_not_unique[ranting.idranting]', // Validasi untuk idranting
     ])) {
         // Proses upload foto jika ada
         $fileFoto = $this->request->getFile('foto');
@@ -147,6 +170,7 @@ class Muzaki extends BaseController
             'nohp'         => $this->request->getPost('nohp'),
             'keterangan'   => $this->request->getPost('keterangan'),
             'foto'         => $namaFoto, // Simpan nama file foto baru ke database
+            'idranting'    => $this->request->getPost('idranting'), // Simpan idranting yang baru
         ]);
 
         // Tampilkan notifikasi sukses
@@ -158,12 +182,14 @@ class Muzaki extends BaseController
     $data = [
         'title'   => 'Edit Data Muzaki',
         'muzaki'  => $muzaki,
+        'ranting' => $rantingData, // Kirim data ranting ke view
         'content' => 'admin/muzaki/edit',
         'validation' => $this->validator, // Kirim error validasi ke view
     ];
 
     echo view('admin/layout/wrapper', $data);
 }
+
 
 
     /**
