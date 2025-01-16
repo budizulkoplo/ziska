@@ -55,6 +55,21 @@ echo csrf_field();
                 </div>
 
                 <div class="form-group row">
+                    <label class="col-3">Ranting</label>
+                    <div class="col-9">
+                        <select name="idranting" class="form-control" required>
+                            <option value="" disabled selected>Pilih Ranting</option>
+                            <?php foreach ($ranting as $r): ?>
+                                <option value="<?= $r['idranting'] ?>" <?= set_value('idranting') == $r['idranting'] ? 'selected' : '' ?>>
+                                    <?= $r['namaranting'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
                     <label class="col-3">Foto</label>
                     <div class="col-9">
                         <input type="file" name="foto" class="form-control" accept="image/*">

@@ -20,136 +20,21 @@ class Mustahik extends BaseController
      * Menampilkan daftar mustahik
      */
     public function index()
-    {
-        checklogin();
-        $mustahikData = $this->mustahikModel->getAllmustahik();
-
-        $data = [
-            'title'   => 'Daftar mustahik',
-            'mustahik'  => $mustahikData,
-            'content' => 'admin/mustahik/index',
-        ];
-
-        echo view('admin/layout/wrapper', $data);
-    }
-
-    /**
-     * Menambahkan data mustahik
-     */
-    public function add()
-    {
-        checklogin();
-
-        // Validasi input
-        if ($this->request->getMethod() === 'post' && $this->validate([
-           
-            'nama'      => 'required',
-            'nik'       => 'required',
-            'alamat'    => 'required',
-            'nohp'      => 'required',
-            'foto'      => 'uploaded[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,4096]',
-        ])) {
-            // Proses upload file foto
-            $fileFoto = $this->request->getFile('foto');
-            $namaFoto = '';
-
-            // Cek apakah file berhasil diunggah
-            if ($fileFoto->isValid() && !$fileFoto->hasMoved()) {
-                $namaFoto = $fileFoto->getRandomName(); // Generate nama unik
-                $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto); // Simpan file di folder
-
-            } else {
-                // Jika gagal upload, kembalikan ke halaman add dengan error
-                $this->session->setFlashdata('error', 'Gagal mengupload foto: ' . $fileFoto->getErrorString());
-                return redirect()->back()->withInput();
-            }
-
-            // Simpan data ke database
-            $this->mustahikModel->addmustahik([
-                
-                'nama'         => $this->request->getPost('nama'),
-                'nik'          => $this->request->getPost('nik'),
-                'alamat'       => $this->request->getPost('alamat'),
-                'nohp'         => $this->request->getPost('nohp'),
-                'keterangan'   => $this->request->getPost('keterangan'),
-                'foto'         => $namaFoto, // Simpan nama file foto ke database
-            ]);
-
-            // Tampilkan notifikasi sukses
-            $this->session->setFlashdata('sukses', 'Data berhasil ditambahkan');
-            return redirect()->to(base_url('admin/mustahik'));
-        }
-
-        // Jika validasi gagal, kembalikan ke halaman tambah dengan error
-        $data = [
-            'title'   => 'Tambah Data mustahik',
-            'content' => 'admin/mustahik/add',
-            'validation' => $this->validator, // Kirim error validasi ke view
-        ];
-
-        echo view('admin/layout/wrapper', $data);
-    }
-
-    /**
-     * Menampilkan halaman edit data mustahik
-     */
-    public function edit($idmustahik)
 {
     checklogin();
 
-    // Ambil data mustahik berdasarkan ID
-    $mustahik = $this->mustahikModel->getmustahikById($idmustahik);
+    // Ambil data mustahik
+    $mustahikData = $this->mustahikModel->getAllmustahik();
 
-    // Cek apakah data ditemukan
-    if (!$mustahik) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException('mustahik tidak ditemukan');
-    }
+    // Ambil data ranting
+    $rantingModel = new \App\Models\Ranting_model();
+    $ranting = $rantingModel->findAll();
 
-    // Validasi input dan simpan data jika ada
-    if ($this->request->getMethod() === 'post' && $this->validate([
-        'nama'      => 'required',
-        'nik'       => 'required',
-        'alamat'    => 'required',
-        'nohp'      => 'required',
-        'foto'      => 'is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,9096]', // Foto opsional
-    ])) {
-        // Proses upload foto jika ada
-        $fileFoto = $this->request->getFile('foto');
-        $namaFoto = $mustahik['foto']; // Gunakan foto lama jika tidak ada foto baru
-
-        // Jika ada file yang diunggah
-        if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
-            // Hapus foto lama jika ada
-            if (file_exists(ROOTPATH . 'assets/upload/image/' . $mustahik['foto'])) {
-                unlink(ROOTPATH . 'assets/upload/image/' . $mustahik['foto']);
-            }
-
-            $namaFoto = $fileFoto->getRandomName(); // Generate nama unik
-            $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto); // Simpan file di folder
-        }
-
-        // Simpan data yang sudah diubah
-        $this->mustahikModel->updatemustahik($idmustahik, [
-           
-            'nama'         => $this->request->getPost('nama'),
-            'nik'          => $this->request->getPost('nik'),
-            'alamat'       => $this->request->getPost('alamat'),
-            'nohp'         => $this->request->getPost('nohp'),
-            'keterangan'   => $this->request->getPost('keterangan'),
-            'foto'         => $namaFoto, // Simpan nama file foto baru ke database
-        ]);
-
-        // Tampilkan notifikasi sukses
-        $this->session->setFlashdata('sukses', 'Data berhasil diperbarui');
-        return redirect()->to(base_url('admin/mustahik'));
-    }
-
-    // Jika form belum disubmit atau validasi gagal, tampilkan form edit
     $data = [
-        'title'   => 'Edit Data mustahik',
-        'mustahik'  => $mustahik,
-        'content' => 'admin/mustahik/edit',
-        'validation' => $this->validator, // Kirim error validasi ke view
+        'title'    => 'Daftar Mustahik',
+        'mustahik' => $mustahikData,
+        'ranting'  => $ranting, // Kirim data ranting ke view
+        'content'  => 'admin/mustahik/index',
     ];
 
     echo view('admin/layout/wrapper', $data);
@@ -157,11 +42,136 @@ class Mustahik extends BaseController
 
 
     /**
-     * Menghapus data mustahik berdasarkan ID
+     * Menambahkan data mustahik
+     */
+    public function add()
+{
+    checklogin();
+
+    // Ambil data ranting dari model
+    $rantingModel = new \App\Models\Ranting_model(); // Pastikan Ranting_model sudah dibuat
+    $ranting = $rantingModel->findAll(); // Ambil semua data ranting
+
+    if ($this->request->getMethod() === 'post') {
+        $rules = [
+            'nama'       => 'required',
+            'nik'        => 'required',
+            'alamat'     => 'required',
+            'nohp'       => 'required',
+            'idranting'  => 'required',
+            'foto'       => 'uploaded[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,4096]',
+        ];
+
+        if ($this->validate($rules)) {
+            $fileFoto = $this->request->getFile('foto');
+            $namaFoto = $fileFoto->getRandomName();
+            $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto);
+
+            $this->mustahikModel->addmustahik([
+                'nama'       => $this->request->getPost('nama'),
+                'nik'        => $this->request->getPost('nik'),
+                'alamat'     => $this->request->getPost('alamat'),
+                'nohp'       => $this->request->getPost('nohp'),
+                'idranting'  => $this->request->getPost('idranting'),
+                'foto'       => $namaFoto,
+            ]);
+
+            $this->session->setFlashdata('sukses', 'Data berhasil ditambahkan');
+            return redirect()->to(base_url('admin/mustahik'));
+        }
+    }
+
+    // Kirim data ranting ke view
+    $data = [
+        'title'      => 'Tambah Data Mustahik',
+        'content'    => 'admin/mustahik/add',
+        'ranting'    => $ranting, // Kirim data ranting ke view
+        'validation' => $this->validator,
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
+
+
+    /**
+     * Mengedit data mustahik
+     */
+    public function edit($idmustahik)
+    {
+        checklogin();
+
+        $mustahik = $this->mustahikModel->getmustahikById($idmustahik);
+
+        if (!$mustahik) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data mustahik tidak ditemukan.');
+        }
+
+        if ($this->request->getMethod() === 'post') {
+            $rules = [
+                'nama'   => 'required',
+                'nik'    => 'required',
+                'alamat' => 'required',
+                'nohp'   => 'required',
+                'foto'   => 'is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png]|max_size[foto,4096]',
+            ];
+
+            if ($this->validate($rules)) {
+                $fileFoto = $this->request->getFile('foto');
+                $namaFoto = $mustahik['foto'];
+
+                if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
+                    if ($namaFoto && file_exists(ROOTPATH . 'assets/upload/image/' . $namaFoto)) {
+                        unlink(ROOTPATH . 'assets/upload/image/' . $namaFoto);
+                    }
+
+                    $namaFoto = $fileFoto->getRandomName();
+                    $fileFoto->move(ROOTPATH . 'assets/upload/image/', $namaFoto);
+                }
+
+                $this->mustahikModel->updatemustahik($idmustahik, [
+                    'nama'       => $this->request->getPost('nama'),
+                    'nik'        => $this->request->getPost('nik'),
+                    'alamat'     => $this->request->getPost('alamat'),
+                    'nohp'       => $this->request->getPost('nohp'),
+                    'keterangan' => $this->request->getPost('keterangan'),
+                    'foto'       => $namaFoto,
+                ]);
+
+                $this->session->setFlashdata('sukses', 'Data berhasil diperbarui');
+                return redirect()->to(base_url('admin/mustahik'));
+            }
+
+            $this->session->setFlashdata('error', 'Terjadi kesalahan, periksa input Anda.');
+        }
+
+        $data = [
+            'title'      => 'Edit Data Mustahik',
+            'mustahik'   => $mustahik,
+            'content'    => 'admin/mustahik/edit',
+            'validation' => $this->validator,
+        ];
+
+        echo view('admin/layout/wrapper', $data);
+    }
+
+    /**
+     * Menghapus data mustahik
      */
     public function delete($idmustahik)
     {
         checklogin();
+
+        $mustahik = $this->mustahikModel->getmustahikById($idmustahik);
+
+        if (!$mustahik) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data mustahik tidak ditemukan.');
+        }
+
+        if ($mustahik['foto'] && file_exists(ROOTPATH . 'assets/upload/image/' . $mustahik['foto'])) {
+            unlink(ROOTPATH . 'assets/upload/image/' . $mustahik['foto']);
+        }
+
         $this->mustahikModel->deletemustahik($idmustahik);
         $this->session->setFlashdata('sukses', 'Data berhasil dihapus');
         return redirect()->to(base_url('admin/mustahik'));

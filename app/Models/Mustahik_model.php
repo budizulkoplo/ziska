@@ -24,33 +24,30 @@ class Mustahik_model extends Model
     protected $updatedField  = 'updated_at';
 
     /**
-     * Fungsi untuk mengambil semua data mustahik
+     * Fungsi untuk mengambil semua data mustahik beserta nama ranting
      */
     public function getAllmustahik()
     {
-        return $this->findAll();
+        return $this->select('mustahik.*, ranting.namaranting')
+                    ->join('ranting', 'ranting.idranting = mustahik.idranting', 'left')
+                    ->findAll();
     }
 
     /**
-     * Fungsi untuk mengambil data mustahik berdasarkan ID
-     * @param int $id
+     * Fungsi untuk mengambil data mustahik berdasarkan ID beserta nama ranting
+     * @param int $idmustahik
      * @return array|null
      */
     public function getmustahikById($idmustahik)
     {
-        return $this->where(['idmustahik' => $idmustahik])->first();
+        return $this->select('mustahik.*, ranting.namaranting')
+                    ->join('ranting', 'ranting.idranting = mustahik.idranting', 'left')
+                    ->where(['idmustahik' => $idmustahik])
+                    ->first();
     }
-
-    // Fungsi untuk mengambil data mustahik berdasarkan username
-public function getmustahikByUsername($username)
-{
-    return $this->where(['username' => $username])->first();
-}
 
     /**
      * Fungsi untuk menambahkan data mustahik
-     * @param array $data
-     * @return bool
      */
     public function addmustahik($data)
     {
