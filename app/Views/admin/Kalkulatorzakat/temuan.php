@@ -4,6 +4,9 @@
         <div id="zakatTemuanForm">
             <!-- Form Zakat Temuan -->
             <h4>Form Zakat Temuan</h4>
+            <p>Zakat yang dibayarkan atas harta temuan yang tersembunyi atau harta karun. Zakat ini disebut juga zakat rikaz. 
+Zakat rikaz wajib dikeluarkan jika harta temuan memenuhi beberapa kriteria, yaitu: Harta temuan berupa emas atau perak, Harta temuan berasal dari orang kafir, Pemiliknya telah meninggal dunia, Harta temuan ditemukan bukan di tanah pribadi. 
+Zakat rikaz dibayarkan sebesar 20% dari jumlah harta temuan.</p>
 
             <div class="form-group row">
                 <label class="col-sm-6 col-form-label">Nilai Barang Temuan (dalam Rupiah)</label>

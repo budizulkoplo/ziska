@@ -3,7 +3,7 @@
     <form id="zakatForm">
         <div id="zakatHadiahForm">
             <h4>Form Zakat Hadiah</h4>
-
+<p>Zakat hadiah adalah zakat yang dikenakan atas hadiah yang diterima, seperti uang tunai, barang berharga, atau aset lainnya. Zakat hadiah termasuk dalam zakat maal, yaitu zakat yang wajib dikeluarkan atas harta yang dimiliki seseorang</p>
             <!-- Jenis Hadiah -->
             <div class="form-group row">
                 <label class="col-sm-6 col-form-label">Jenis Hadiah</label>

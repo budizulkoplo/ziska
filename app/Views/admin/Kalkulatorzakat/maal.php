@@ -4,6 +4,7 @@
     <div id="zakatMaalForm">
                     <!-- Form Zakat Maal -->
                     <h4>Zakat Harta (Maal)</h4>
+                    <p>Maal berasal dari kata bahasa Arab artinya harta atau kekayaan (al-amwal, jamak dari kata maal) adalah “segala hal yang diinginkan manusia untuk disimpan dan dimiliki” (Lisan ul-Arab). Menurut Islam sendiri, harta merupakan sesuatu yang boleh atau dapat dimiliki dan digunakan (dimanfaatkan) sesuai kebutuhannya.</p>
                     <div class="form-group row">
                         <label class="col-sm-6 col-form-label">Harga Emas (gram)</label>
                         <div class="col-sm-6 input-group">

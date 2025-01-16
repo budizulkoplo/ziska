@@ -4,6 +4,9 @@
         <div id="zakatPertanianForm">
                     <!-- Form Zakat Pertanian -->
                     <h4>Zakat Pertanian</h4>
+                    <p>Zakat pertanian adalah salah satu jenis zakat yang dikeluarkan dari hasil panen atau produksi pertanian. Zakat pertanian harus dikeluarkan oleh setiap individu atau kelompok yang memiliki lahan pertanian atau hasil panen yang mencukupi nisab (batas minimal untuk wajib zakat)
+
+Nisab untuk zakat pertanian adalah sebanyak 5 wasaq atau sekitar 653 kg beras. Jika hasil panen mencapai nisab tersebut. Kadar zakat pertanian adalah sebesar 5% atau 1/20 dari hasil panen atau produksi pertanian setelah dipotong biaya produksi. Kadar ini sesuai dengan ketentuan yang terdapat dalam hadis dari Nabi Muhammad SAW yang menyebutkan bahwa zakat pertanian sebesar 1/10 (10%) untuk tanah yang diasuransikan atau diirigasi dan sebesar 1/20 (5%) untuk tanah yang tidak diasuransikan atau diirigasi secara teratur.</p>
                     <div class="form-group row">
                         <label class="col-sm-6 col-form-label">Jenis Irigasi</label>
                         <div class="col-sm-6">
