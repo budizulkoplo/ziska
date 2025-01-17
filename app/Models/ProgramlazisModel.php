@@ -17,7 +17,8 @@ class ProgramLazisModel extends Model
         'deskripsiprogram', 
         'fotoprogram', 
         'targetdonasi', 
-        'terkumpul'
+        'terkumpul',
+        'idranting'
     ];
 
     public function slider()
