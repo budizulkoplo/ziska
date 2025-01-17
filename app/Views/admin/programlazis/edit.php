@@ -130,11 +130,60 @@
 <?= form_close() ?>
 
 <script>
-    var muzakiMustahikList = <?= json_encode(array_merge(
-        array_map(fn($m) => ['id' => $m['id'], 'type' => 'muzaki', 'nama' => $m['nama']], $selectedMuzaki),
-        array_map(fn($m) => ['id' => $m['idmustahik'], 'type' => 'mustahik', 'nama' => $m['nama']], $selectedMustahik)
-    )) ?>;
+    // Data awal untuk Muzaki dan Mustahik yang dipilih
+    var muzakiMustahikList = <?= json_encode(
+        array_merge(
+            array_map(function ($m) {
+                return ['id' => $m['id'], 'type' => 'muzaki', 'nama' => $m['nama']];
+            }, $selectedMuzaki),
+            array_map(function ($m) {
+                return ['id' => $m['idmustahik'], 'type' => 'mustahik', 'nama' => $m['nama']];
+            }, $selectedMustahik)
+        ),
+        JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_AMP
+    ) ?>;
 
-    // Skrip diambil dari form tambah untuk update tabel
-    renderMuzakiMustahikTable();
+    // Pastikan fungsi renderMuzakiMustahikTable tersedia sebelum digunakan
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMuzakiMustahikTable();
+    });
+
+    // Fungsi untuk merender tabel Muzaki dan Mustahik
+    function renderMuzakiMustahikTable() {
+        const tableBody = document.getElementById('muzakiMustahikTableBody');
+        const muzakiInput = document.getElementById('muzaki_ids');
+        const mustahikInput = document.getElementById('mustahik_ids');
+
+        // Kosongkan tabel
+        tableBody.innerHTML = '';
+
+        muzakiMustahikList.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.id = `${item.type}_${item.id}`;
+
+            row.innerHTML = `
+                <td>${item.nama}</td>
+                <td>${item.type === 'muzaki' ? 'Muzaki' : 'Mustahik'}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeMuzakiMustahik(${index})">Hapus</button>
+                </td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
+        // Update input tersembunyi
+        const muzakiIds = muzakiMustahikList.filter(item => item.type === 'muzaki').map(item => item.id);
+        const mustahikIds = muzakiMustahikList.filter(item => item.type === 'mustahik').map(item => item.id);
+
+        muzakiInput.value = muzakiIds.join(',');
+        mustahikInput.value = mustahikIds.join(',');
+    }
+
+    // Fungsi untuk menghapus item dari daftar
+    function removeMuzakiMustahik(index) {
+        muzakiMustahikList.splice(index, 1);
+        renderMuzakiMustahikTable();
+    }
 </script>
+

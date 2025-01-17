@@ -229,16 +229,20 @@ class ProgramLazis extends BaseController
 
     // Validasi input
     if (!$this->validate([
-        'tglmulai'     => 'required|valid_date',
-        'tglselesai'   => 'required|valid_date',
-        'judulprogram'        => 'required|string|max_length[255]',
-        'deskripsiprogram'    => 'required|string',
-        'fotoprogram'         => 'permit_empty|uploaded[fotoprogram]|mime_in[fotoprogram,image/jpg,image/jpeg,image/png]|max_size[fotoprogram,2048]',
-        'targetdonasi' => 'required|numeric',
-        'terkumpul'    => 'required|numeric',
+        'tglmulai'        => 'required|valid_date',
+        'tglselesai'      => 'required|valid_date',
+        'judulprogram'    => 'required|string|max_length[255]',
+        'deskripsiprogram'=> 'required|string',
+        'fotoprogram'     => 'permit_empty|uploaded[fotoprogram]|mime_in[fotoprogram,image/jpg,image/jpeg,image/png]|max_size[fotoprogram,2048]',
+        'targetdonasi'    => 'required|numeric',
+        'terkumpul'       => 'required|numeric',
     ])) {
         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
+
+    // Mulai transaksi
+    $db = \Config\Database::connect();
+    $db->transStart();
 
     // Menangani unggahan file gambar
     $fotoprogram = $this->request->getFile('fotoprogram');
@@ -246,33 +250,58 @@ class ProgramLazis extends BaseController
 
     if ($fotoprogram && $fotoprogram->isValid() && !$fotoprogram->hasMoved()) {
         $fotoprogramName = $fotoprogram->getRandomName();  // Generate nama unik untuk file
-        $fotoprogram->move('assets/uploads/programlazis', $fotoprogramName);  // Simpan file
+        try {
+            $fotoprogram->move('assets/uploads/programlazis', $fotoprogramName);  // Simpan file
+        } catch (\Exception $e) {
+            $db->transRollback();  // Batalkan transaksi
+            return redirect()->back()->withInput()->with('error', 'Gagal mengunggah foto: ' . $e->getMessage());
+        }
     }
 
     // Ambil data lama untuk menjaga fotoprogram lama jika tidak ada file baru yang diunggah
     $program = $m_program->find($idprogram);
     if (!$program) {
+        $db->transRollback();
         $this->session->setFlashdata('error', 'Program tidak ditemukan');
         return redirect()->to(base_url('admin/programlazis'));
     }
 
+    // Hapus file lama jika file baru diunggah
+    if ($fotoprogramName && $program['fotoprogram'] && file_exists('assets/uploads/programlazis/' . $program['fotoprogram'])) {
+        unlink('assets/uploads/programlazis/' . $program['fotoprogram']);
+    }
+
     // Data yang akan diupdate
     $data = [
-        'tglmulai'     => $this->request->getPost('tglmulai'),
-        'tglselesai'   => $this->request->getPost('tglselesai'),
-        'judulprogram'        => $this->request->getPost('judulprogram'),
-        'deskripsiprogram'    => $this->request->getPost('deskripsiprogram'),
-        'fotoprogram'         => $fotoprogramName ? $fotoprogramName : $program['fotoprogram'],  // Jika fotoprogram baru diunggah, gunakan nama file baru
-        'targetdonasi' => $this->request->getPost('targetdonasi'),
-        'terkumpul'    => $this->request->getPost('terkumpul'),
+        'tglmulai'        => $this->request->getPost('tglmulai'),
+        'tglselesai'      => $this->request->getPost('tglselesai'),
+        'judulprogram'    => $this->request->getPost('judulprogram'),
+        'deskripsiprogram'=> $this->request->getPost('deskripsiprogram'),
+        'fotoprogram'     => $fotoprogramName ? $fotoprogramName : $program['fotoprogram'],  // Gunakan file baru jika ada
+        'targetdonasi'    => $this->request->getPost('targetdonasi'),
+        'terkumpul'       => $this->request->getPost('terkumpul'),
     ];
 
     // Update data ke database
-    $m_program->update($idprogram, $data);
+    try {
+        $m_program->update($idprogram, $data);
+    } catch (\Exception $e) {
+        $db->transRollback();
+        return redirect()->back()->withInput()->with('error', 'Gagal memperbarui program: ' . $e->getMessage());
+    }
 
+    // Selesaikan transaksi
+    $db->transComplete();
+
+    if ($db->transStatus() === false) {
+        return redirect()->back()->withInput()->with('error', 'Gagal memperbarui program. Silakan coba lagi.');
+    }
+
+    // Beri notifikasi sukses
     $this->session->setFlashdata('sukses', 'Program berhasil diperbarui');
     return redirect()->to(base_url('admin/programlazis'));
 }
+
 
 
     // Menghapus program
