@@ -130,7 +130,7 @@
 <?= form_close() ?>
 
 <script>
-    // Data awal untuk Muzaki dan Mustahik yang dipilih
+    // Data awal untuk Muzaki dan Mustahik
     var muzakiMustahikList = <?= json_encode(
         array_merge(
             array_map(function ($m) {
@@ -142,11 +142,6 @@
         ),
         JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_AMP
     ) ?>;
-
-    // Pastikan fungsi renderMuzakiMustahikTable tersedia sebelum digunakan
-    document.addEventListener("DOMContentLoaded", function () {
-        renderMuzakiMustahikTable();
-    });
 
     // Fungsi untuk merender tabel Muzaki dan Mustahik
     function renderMuzakiMustahikTable() {
@@ -180,10 +175,33 @@
         mustahikInput.value = mustahikIds.join(',');
     }
 
-    // Fungsi untuk menghapus item dari daftar
+    // Tambahkan Muzaki ke daftar
+    function addMuzaki(id, type, nama) {
+        // Cek apakah sudah ada di daftar
+        if (muzakiMustahikList.some(item => item.id === id && item.type === type)) {
+            alert('Data sudah ada dalam daftar!');
+            return;
+        }
+
+        muzakiMustahikList.push({ id, type, nama });
+        renderMuzakiMustahikTable();
+    }
+
+    // Tambahkan Mustahik ke daftar
+    function addMustahik(id, type, nama) {
+        addMuzaki(id, type, nama); // Fungsi serupa
+    }
+
+    // Hapus Muzaki/Mustahik dari daftar
     function removeMuzakiMustahik(index) {
         muzakiMustahikList.splice(index, 1);
         renderMuzakiMustahikTable();
     }
+
+    // Render tabel saat dokumen siap
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMuzakiMustahikTable();
+    });
 </script>
+
 
