@@ -15,10 +15,6 @@ class ProgrammuzakiModel extends Model
         'idmuzaki',
     ];
 
-    // Jika tabel menggunakan kolom timestamp
-    protected $useTimestamps = true; 
-    protected $createdField  = 'created_at'; // Kolom untuk mencatat waktu pembuatan
-    protected $updatedField  = 'updated_at'; // Kolom untuk mencatat waktu pembaruan
 
     /**
      * Ambil daftar muzaki yang terkait dengan program tertentu
