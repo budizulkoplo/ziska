@@ -1,8 +1,28 @@
-<p>
-    <a href="<?= base_url('admin/transaksi/create') ?>" class="btn btn-success">
-        <i class="fa fa-plus"></i> Tambah Transaksi Baru
-    </a>
-</p>
+<div class="container">
+    <div class="row">
+        <?php foreach ($program as $item): ?>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img 
+                        src="<?= base_url('assets/upload/programlazis/' . $item['fotoprogram']) ?>" 
+                        class="card-img-top" 
+                        alt="<?= $item['judulprogram'] ?>" 
+                        onerror="this.onerror=null;this.src='<?= base_url('assets/upload/default.jpg') ?>';">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"><?= $item['judulprogram'] ?></h5>
+                        
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="<?= base_url('admin/transaksi/create/' . $item['idprogram']) ?>" class="btn btn-success w-100 mt-4">
+                            <i class="fa fa-plus"></i> Tambah Transaksi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
 
 <table class="table table-bordered" id="example1">
     <thead>

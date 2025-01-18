@@ -6,7 +6,7 @@
     <div class="form-group row">
         <label for="tipetransaksi" class="col-3 col-form-label">Transaksi</label>
         <div class="col-9">
-            <input type="text" id="tipetransaksi" name="tipetransaksi" class="form-control" value="Zakat" readonly>
+            <input type="text" id="tipetransaksi" name="tipetransaksi" class="form-control" value="<?= $transaksi['tipetransaksi'] ?>" readonly>
         </div>
     </div>
     <div class="form-group row">

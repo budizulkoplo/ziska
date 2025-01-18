@@ -4,35 +4,55 @@ namespace App\Controllers\Admin;
 
 use App\Models\TransaksiModel;
 use App\Models\KodetransaksiModel; 
+use App\Models\ProgramLazisModel; 
 
 class Transaksi extends BaseController
 {
     // Menampilkan daftar transaksi
     public function index()
 {
-    checklogin(); // Pastikan pengguna sudah login
+    // Pastikan pengguna sudah login
+    checklogin(); 
+
+    // Inisialisasi model yang dibutuhkan
     $m_transaksi = new \App\Models\TransaksiModel();
     $m_muzaki = new \App\Models\Muzaki_model();
+    $m_program = new ProgramLazisModel();
 
+    // Ambil data program berdasarkan idranting dari session
+    $idranting = $this->session->get('idranting');
+
+    // Jika idranting adalah 1 (All), ambil semua program
+    if ($idranting == 1) {
+        $program = $m_program->findAll();
+    } else {
+        // Jika idranting selain 1, ambil program berdasarkan idranting
+        $program = $m_program->where('idranting', $idranting)->findAll();
+    }
+
+    // Ambil data transaksi berdasarkan level akses pengguna
     if (session('akses_level') !== 'muzaki') {
-        // Ambil data transaksi dengan join ke tabel muzaki
+        // Jika akses_level bukan 'muzaki', ambil semua transaksi dengan join ke tabel muzaki
         $transaksi = $m_transaksi
             ->select('transaksi.*, muzaki.nama AS nama_muzaki')
             ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
             ->findAll();
     } else {
-        // Ambil data transaksi hanya untuk muzaki yang sedang login
+        // Jika akses_level 'muzaki', hanya ambil transaksi untuk muzaki yang sedang login
         $transaksi = $m_transaksi
             ->where('muzaki', session('username'))
             ->findAll();
     }
 
+    // Menyiapkan data untuk ditampilkan
     $data = [
-        'title'     => (session('akses_level') === 'muzaki') ? 'Riwayat Transaksi' : 'Daftar Transaksi',
-        'transaksi' => $transaksi, 
-        'content'   => (session('akses_level') === 'muzaki') ? 'admin/transaksi/riwayat' : 'admin/transaksi/index',
+        'title'      => (session('akses_level') === 'muzaki') ? 'Riwayat Transaksi' : 'Daftar Transaksi',
+        'transaksi'  => $transaksi, 
+        'program'    => $program, // Menyertakan data program
+        'content'    => (session('akses_level') === 'muzaki') ? 'admin/transaksi/riwayat' : 'admin/transaksi/index',
     ];
 
+    // Menampilkan view
     echo view('admin/layout/wrapper', $data);
 }
 

@@ -366,26 +366,46 @@ try {
     }
 
     public function viewprogram()
-    {
-        // Memastikan pengguna telah login
-        checklogin();
+{
+    // Memastikan pengguna telah login
+    checklogin();
 
-        // Memuat model ProgramLazis
-        $m_program = new ProgramLazisModel();
+    // Mendapatkan id_user dari session
+    $id_user = $this->session->get('id_user');
 
-        // Mendapatkan data semua program
-        $program = $m_program->findAll();
+    // Memuat model ProgramLazis dan Programmuzaki
+    $m_program = new ProgramLazisModel();
+    $m_programmuzaki = new \App\Models\ProgrammuzakiModel();
 
-        // Mengirim data ke view
-        $data = [
-            'title'   => 'Program Lazis',
-            'program' => $program, // Data program untuk ditampilkan
-            'content' => 'admin/programlazis/viewprogram', // View yang akan ditampilkan
-        ];
+    // Mendapatkan data program yang hanya ada di tabel programmuzaki dengan idmuzaki sesuai id_user
+    $program_ids = $m_programmuzaki->select('idprogram')
+                                    ->where('idmuzaki', $id_user) // Filter berdasarkan id_user
+                                    ->findAll();
 
-        // Menampilkan view
-        echo view('admin/layout/wrapper', $data);
+    // Mengambil idprogram yang ditemukan
+    $idprograms = array_column($program_ids, 'idprogram');
+
+    // Jika ada idprogram yang ditemukan, ambil data program terkait yang masih berjalan
+    if (!empty($idprograms)) {
+        $program = $m_program->whereIn('idprogram', $idprograms)
+                             ->where('tglselesai >=', date('Y-m-d')) // Program yang tanggal selesai belum lewat
+                             ->findAll();
+    } else {
+        // Jika tidak ada data program yang ditemukan
+        $program = [];
     }
+
+    // Mengirim data ke view
+    $data = [
+        'title'   => 'Program Lazis',
+        'program' => $program, // Data program untuk ditampilkan
+        'content' => 'admin/programlazis/viewprogram', // View yang akan ditampilkan
+    ];
+
+    // Menampilkan view
+    echo view('admin/layout/wrapper', $data);
+}
+
 
     public function donate($idprogram)
 {
@@ -426,9 +446,9 @@ public function storeDonation()
     }
 
     // Ambil data cashflow dan idrek dari tabel m_kodetransaksi
-    $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', 'Donasi')->first(); // Ambil berdasarkan kodetransaksi 'Donasi'
+    $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', 'Program')->first(); // Ambil berdasarkan kodetransaksi 'Donasi'
     if (!$kodeTransaksi) {
-        return redirect()->back()->with('error', 'Kode transaksi untuk Donasi tidak ditemukan.');
+        return redirect()->back()->with('error', 'Kode transaksi untuk Program tidak ditemukan.');
     }
 
     $cashflow = $kodeTransaksi['cashflow']; // Ambil nilai cashflow
@@ -436,7 +456,7 @@ public function storeDonation()
 
     // Ambil data dari input form
     $data = [
-        'tipetransaksi' => 'Donasi',
+        'tipetransaksi' => 'Program',
         'tgltransaksi'  => date('Y-m-d H:i:s'),
         'muzaki'        => session()->get('username'), // Username dari session
         'nominal'       => $this->request->getPost('jumlah'),
