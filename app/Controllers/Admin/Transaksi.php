@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Models\TransaksiModel;
 use App\Models\KodetransaksiModel; 
 use App\Models\ProgramLazisModel; 
+use App\Models\Muzaki_model;
 
 class Transaksi extends BaseController
 {
@@ -57,21 +58,39 @@ class Transaksi extends BaseController
 }
 
 
-    public function create()
-    {
-        checklogin();  // Pastikan pengguna sudah login
-        $m_kodetransaksi = new KodetransaksiModel();
-        
-        // Ambil hanya kodetransaksi dengan cashflow 'Pemasukan'
-        $kodetransaksi = $m_kodetransaksi->where('cashflow', 'Pemasukan')->findAll(); 
+public function create($idprogram = null)
+{
+    checklogin(); // Pastikan pengguna sudah login
 
-        $data = [
-            'title'       => 'Tambah Transaksi',
-            'kodetransaksi' => $kodetransaksi, // Mengirimkan data kodetransaksi yang telah difilter ke view
-            'content'     => 'admin/transaksi/create',  // View untuk form tambah transaksi
-        ];
-        echo view('admin/layout/wrapper', $data);
+    // Inisialisasi model yang dibutuhkan
+    $m_program = new ProgramLazisModel();
+    $m_muzaki = new Muzaki_model();
+    
+    // Ambil data program berdasarkan idprogram
+    $program = $m_program->find($idprogram);
+
+    // Ambil data muzaki berdasarkan idprogram yang dipilih
+    if ($idprogram) {
+        $muzaki = $m_muzaki
+            ->join('programmuzaki', 'programmuzaki.idmuzaki = muzaki.id')
+            ->where('programmuzaki.idprogram', $idprogram)
+            ->findAll();
+    } else {
+        $muzaki = [];
     }
+    
+    // Kirimkan data ke view
+    $data = [
+        'title'      => 'Tambah Transaksi',
+        'program'    => $program,  // Kirimkan data program yang sudah dipilih
+        'muzaki'     => $muzaki,
+        'content'    => 'admin/transaksi/create', // View untuk form input transaksi
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
+
 
     public function zakat()
 {

@@ -4,34 +4,27 @@
     <?= form_open(base_url('admin/transaksi/store')); ?>
     <?= csrf_field(); ?>
 
-    <!-- Input Tipetransaksi -->
+    <!-- Input Nama Program (readonly) -->
     <div class="form-group row">
-        <label for="tipetransaksi" class="col-3 col-form-label">Tipe Transaksi</label>
+        <label for="namaprogram" class="col-3 col-form-label">Nama Program</label>
         <div class="col-9">
-            <select id="tipetransaksi" name="tipetransaksi" class="form-control" required>
-                <option value="">Pilih Tipe Transaksi</option>
-                <?php foreach ($kodetransaksi as $kode): ?>
-                    <option value="<?= esc($kode['kodetransaksi']); ?>" <?= set_select('tipetransaksi', esc($kode['kodetransaksi'])); ?>>
-                        <?= esc($kode['kodetransaksi']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+            <input type="text" id="namaprogram" name="namaprogram" class="form-control" value="<?= esc($program['judulprogram']); ?>" readonly>
+            <input type="hidden" id="idprogram" name="idprogram" value="<?= esc($program['idprogram']); ?>">
         </div>
     </div>
 
-    <!-- Input Tanggal Transaksi -->
-    <div class="form-group row">
-        <label for="tgltransaksi" class="col-3 col-form-label">Tanggal Transaksi</label>
-        <div class="col-9">
-            <input type="date" id="tgltransaksi" name="tgltransaksi" class="form-control" value="<?= set_value('tgltransaksi') ?>" required>
-        </div>
-    </div>
-
-    <!-- Input Muzaki -->
+    <!-- Input Muzaki (tergantung pada program yang dipilih) -->
     <div class="form-group row">
         <label for="muzaki" class="col-3 col-form-label">Muzaki</label>
         <div class="col-9">
-            <input type="text" id="muzaki" name="muzaki" class="form-control" placeholder="Nama Muzaki" value="<?= set_value('muzaki') ?>" required>
+            <select id="muzaki" name="muzaki" class="form-control" required>
+                <option value="">Pilih Muzaki</option>
+                <?php foreach ($muzaki as $item): ?>
+                    <option value="<?= esc($item['id']); ?>" <?= set_select('muzaki', esc($item['id'])); ?>>
+                        <?= esc($item['nama']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </div>
 
