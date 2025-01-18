@@ -137,7 +137,7 @@ public function create($idprogram = null)
         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
 
-    $tipetransaksi = $this->request->getPost('tipetransaksi');
+    $tipetransaksi = 'Program';
     $nominal = $this->request->getPost('nominal');
 
     // Ambil data kode transaksi untuk mendapatkan idrek dan cashflow
