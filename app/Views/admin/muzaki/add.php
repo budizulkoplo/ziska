@@ -22,14 +22,14 @@ echo csrf_field();
                 <div class="form-group row">
                     <label class="col-3">No Anggota</label>
                     <div class="col-9">
-                        <input type="text" name="noanggota" class="form-control" placeholder="No Anggota" value="<?= set_value('noanggota') ?>" required>
+                        <input type="text" id="noanggota" name="noanggota" class="form-control" placeholder="No Anggota" value="<?= set_value('noanggota') ?>" required>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-3">Username</label>
                     <div class="col-9">
-                        <input type="text" name="username" class="form-control" placeholder="Username" value="<?= set_value('username') ?>" required>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Username" value="<?= set_value('username') ?>" readonly required>
                     </div>
                 </div>
 
@@ -52,6 +52,7 @@ echo csrf_field();
                     </div>
                 </div>
 
+                <!-- Input lainnya tetap sama -->
                 <div class="form-group row">
                     <label class="col-3">Nama Lengkap</label>
                     <div class="col-9">
@@ -94,7 +95,6 @@ echo csrf_field();
                     </div>
                 </div>
 
-                <!-- Tambahkan dropdown idranting -->
                 <div class="form-group row">
                     <label class="col-3">Ranting</label>
                     <div class="col-9">
@@ -115,10 +115,15 @@ echo csrf_field();
                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan</button>
             </div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->
 
 <?= form_close(); ?>
+
+<script>
+    // Script untuk mengisi username secara otomatis
+    document.getElementById('noanggota').addEventListener('input', function () {
+        const noAnggota = this.value.trim();
+        document.getElementById('username').value = noAnggota; // Set username sama dengan noanggota
+    });
+</script>

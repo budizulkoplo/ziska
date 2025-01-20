@@ -13,10 +13,20 @@
                         
                     </div>
                     <div class="card-footer text-center">
-                        <a href="<?= base_url('admin/transaksi/create/' . $item['idprogram']) ?>" class="btn btn-success w-100 mt-4">
-                            <i class="fa fa-plus"></i> Tambah Transaksi
-                        </a>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="<?= base_url('admin/transaksi/create/' . $item['idprogram']) ?>" class="btn btn-success w-100 mt-2">
+                                    <i class="fa fa-plus"></i> Input
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                            <a href="<?= base_url('admin/transaksi/tasaruf/' . $item['idprogram']) ?>" class="btn btn-outline-primary w-100 mt-2">
+                                <i class="fa fa-edit"></i> Tasaruf
+                            </a>
+                            </div>
+                        </div>
                     </div>
+                    
                 </div>
             </div>
         <?php endforeach; ?>

@@ -6,6 +6,7 @@ use App\Models\TransaksiModel;
 use App\Models\KodetransaksiModel; 
 use App\Models\ProgramLazisModel; 
 use App\Models\Muzaki_model;
+use App\Models\Mustahik_model;
 
 class Transaksi extends BaseController
 {
@@ -90,6 +91,38 @@ public function create($idprogram = null)
     echo view('admin/layout/wrapper', $data);
 }
 
+public function tasaruf($idprogram = null)
+{
+    checklogin(); // Pastikan pengguna sudah login
+
+    // Inisialisasi model yang dibutuhkan
+    $m_program = new ProgramLazisModel();
+    $m_mustahik = new Mustahik_model();
+    
+    // Ambil data program berdasarkan idprogram
+    $program = $m_program->find($idprogram);
+
+    // Ambil data muzaki berdasarkan idprogram yang dipilih
+    if ($idprogram) {
+        $mustahik = $m_mustahik
+            ->join('programmustahik', 'programmustahik.idmustahik = mustahik.idmustahik')
+            ->where('programmustahik.idprogram', $idprogram)
+            ->findAll();
+    } else {
+        $mustahik = [];
+    }
+    
+    // Kirimkan data ke view
+    $data = [
+        'title'      => 'Tasaruf Program',
+        'program'    => $program,  // Kirimkan data program yang sudah dipilih
+        'mustahik'     => $mustahik,
+        'content'    => 'admin/transaksi/tasaruf', // View untuk form input transaksi
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
 
 
     public function zakat()
@@ -123,12 +156,12 @@ public function create($idprogram = null)
 
     $m_transaksi = new TransaksiModel();
     $m_rekening = new \App\Models\RekeningModel();
+    $m_muzaki = new \App\Models\Muzaki_model();
     $m_log = new \App\Models\TransactionLogModel();
     $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
 
     // Validasi input
     if (!$this->validate([
-        'tipetransaksi' => 'required|string|max_length[50]',
         'tgltransaksi'  => 'required|valid_date',
         'muzaki'        => 'required|string|max_length[100]',
         'nominal'       => 'required|decimal',
@@ -137,7 +170,7 @@ public function create($idprogram = null)
         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
 
-    $tipetransaksi = 'Program';
+    $tipetransaksi = $this->request->getPost('kodetransaksi');
     $nominal = $this->request->getPost('nominal');
 
     // Ambil data kode transaksi untuk mendapatkan idrek dan cashflow
@@ -155,6 +188,11 @@ public function create($idprogram = null)
         return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
     }
 
+    $muzaki = $m_muzaki->find($this->request->getPost('muzaki'));
+    if (!$muzaki) {
+        return redirect()->back()->with('error', 'muzaki tidak ditemukan.');
+    }
+    $noanggotamuzaki=$muzaki['noanggota'];
     // Perhitungan saldo
     $saldoAwal = $rekening['saldoakhir'];
     $saldoAkhir = ($cashflow === 'Pemasukan') ? $saldoAwal + $nominal : $saldoAwal - $nominal;
@@ -162,8 +200,10 @@ public function create($idprogram = null)
     // Menyimpan data transaksi
     $dataTransaksi = [
         'tipetransaksi' => $tipetransaksi,
+        'program'       => $this->request->getPost('idprogram'),
+        'judulprogram'  => $this->request->getPost('namaprogram'),
         'tgltransaksi'  => $this->request->getPost('tgltransaksi'),
-        'muzaki'        => $this->request->getPost('muzaki'),
+        'muzaki'        => $noanggotamuzaki,
         'nominal'       => $nominal,
         'keterangan'    => $this->request->getPost('keterangan'),
         'idrek'         => $idrek,
@@ -189,6 +229,88 @@ public function create($idprogram = null)
     $this->session->setFlashdata('sukses', 'Transaksi berhasil ditambahkan.');
     return redirect()->to(base_url('admin/transaksi'));
 }
+
+public function tasarufsave()
+{
+    checklogin();  // Pastikan pengguna sudah login
+
+    $m_transaksi = new TransaksiModel();
+    $m_rekening = new \App\Models\RekeningModel();
+    $m_mustahik = new \App\Models\Mustahik_model();
+    $m_log = new \App\Models\TransactionLogModel();
+    $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
+
+    // Validasi input
+    if (!$this->validate([
+        'tgltransaksi'  => 'required|valid_date',
+        'mustahik'        => 'required|string|max_length[100]',
+        'nominal'       => 'required|decimal',
+        'keterangan'    => 'permit_empty|string|max_length[255]',
+    ])) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+    }
+
+    $tipetransaksi = $this->request->getPost('kodetransaksi');
+    $nominal = $this->request->getPost('nominal');
+
+    // Ambil data kode transaksi untuk mendapatkan idrek dan cashflow
+    $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', $tipetransaksi)->first();
+    if (!$kodeTransaksi) {
+        return redirect()->back()->with('error', 'Kode transaksi tidak ditemukan.');
+    }
+
+    $idrek = $kodeTransaksi['idrekening'];
+    $cashflow = $kodeTransaksi['cashflow'];
+
+    // Ambil data rekening untuk validasi
+    $rekening = $m_rekening->find($idrek);
+    if (!$rekening) {
+        return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
+    }
+
+    // Perhitungan saldo
+    $saldoAwal = $rekening['saldoakhir'];
+    $saldoAkhir = ($cashflow === 'Pemasukan') ? $saldoAwal + $nominal : $saldoAwal - $nominal;
+
+    // Menyimpan data transaksi
+    $dataTransaksi = [
+        'tipetransaksi' => $tipetransaksi,
+        'program'       => $this->request->getPost('idprogram'),
+        'judulprogram'  => $this->request->getPost('namaprogram'),
+        'tgltransaksi'  => $this->request->getPost('tgltransaksi'),
+        'mustahik'      => $this->request->getPost('mustahik'),
+        'nominal'       => $nominal,
+        'keterangan'    => $this->request->getPost('keterangan'),
+        'idrek'         => $idrek,
+        'cashflow'      => $cashflow,
+        'status'        => 'sukses',
+    ];
+
+    // Debugging query insert
+    // Menggunakan query builder
+$this->db->table('transaksi')->insert($dataTransaksi);
+
+// Mendapatkan ID terakhir yang dimasukkan
+$insertID = $this->db->insertID();
+
+    // Perbarui saldo akhir rekening
+    $m_rekening->update($idrek, ['saldoakhir' => $saldoAkhir]);
+
+    // Simpan log transaksi
+    $dataLog = [
+        'idtransaksi' => $insertID,
+        'idrek'       => $idrek,
+        'nominal'     => $nominal,
+        'saldoawal'   => $saldoAwal,
+        'saldoakhir'  => $saldoAkhir,
+        'cashflow'    => $cashflow,
+    ];
+    $m_log->insert($dataLog);
+
+    $this->session->setFlashdata('sukses', 'Transaksi berhasil ditambahkan.');
+    return redirect()->to(base_url('admin/transaksi'));
+}
+
 
     // Menampilkan form untuk mengedit transaksi
     public function edit($idtransaksi)

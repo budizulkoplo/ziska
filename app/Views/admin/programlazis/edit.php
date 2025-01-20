@@ -8,6 +8,20 @@
 </div>
 
 <div class="form-group row">
+				<label class="col-3">Kode Transaksi</label>
+				<div class="col-9">
+					<select name="kodetransaksi" class="form-control" required>
+						<option value="" disabled>Pilih Kode Transaksi</option>
+						<?php foreach ($kodetransaksi as $t): ?>
+							<option value="<?= $t['kodetransaksi'] ?>" <?= $program['kodetransaksi'] == $t['kodetransaksi'] ? 'selected' : '' ?>>
+								<?= $t['kodetransaksi'] ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
+
+<div class="form-group row">
     <label class="col-3">Tanggal Mulai</label>
     <div class="col-9">
         <input type="date" name="tglmulai" class="form-control" value="<?= esc($program['tglmulai']) ?>" required>

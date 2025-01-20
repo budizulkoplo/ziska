@@ -24,6 +24,8 @@ class TransaksiModel extends Model
         'status',  
         'cashflow',
         'buktibayar',
+        'judulprogram',
+        'mustahik',
     ];
 
     // Validasi untuk input

@@ -50,6 +50,10 @@ class ProgramLazis extends BaseController
     $rantingModel = new \App\Models\Ranting_model();
     $ranting = $rantingModel->findAll();
 
+    $kodetransaksiModel = new \App\Models\KodetransaksiModel();
+    $kodetransaksi = $kodetransaksiModel->where('cashflow', 'Pemasukan')->findAll();
+    
+
     // Ambil idranting yang dipilih dari request (misalnya dari parameter GET atau POST)
     $idranting = $this->session->get('idranting');
 
@@ -77,6 +81,7 @@ class ProgramLazis extends BaseController
     $data = [
         'title'   => 'Tambah Program Lazis',
         'ranting' => $ranting,
+        'kodetransaksi' => $kodetransaksi,
         'muzaki'  => $muzaki,  // Data muzaki
         'mustahik' => $mustahik,  // Data mustahik
         'content' => 'admin/programlazis/create',
@@ -98,6 +103,7 @@ class ProgramLazis extends BaseController
         'tglmulai'     => 'required|valid_date',
         'tglselesai'   => 'required|valid_date',
         'judulprogram' => 'required|string|max_length[255]',
+        'kodetransaksi' => 'required|string|max_length[255]',
         'deskripsiprogram' => 'required|string',
         'fotoprogram'  => 'uploaded[fotoprogram]|is_image[fotoprogram]|mime_in[fotoprogram,image/jpg,image/jpeg,image/png]|max_size[fotoprogram,2048]',
         'targetdonasi' => 'required|numeric',
@@ -125,7 +131,8 @@ class ProgramLazis extends BaseController
         'fotoprogram'  => $filename, // Nama file gambar yang telah diupload
         'targetdonasi' => $this->request->getPost('targetdonasi'),
         'terkumpul'    => $this->request->getPost('terkumpul'),
-        'idranting'    => $this->request->getPost('idranting')
+        'idranting'    => $this->request->getPost('idranting'),
+        'kodetransaksi'    => $this->request->getPost('kodetransaksi')
     ];
 
     $programId = $m_program->insert($data);  // Menyimpan data ke dalam tabel dan mendapatkan ID program
@@ -168,6 +175,9 @@ class ProgramLazis extends BaseController
     $programModel = new \App\Models\ProgramLazisModel();
     $program = $programModel->find($idprogram);
 
+    $kodetransaksiModel = new \App\Models\KodetransaksiModel();
+    $kodetransaksi = $kodetransaksiModel->where('cashflow', 'Pemasukan')->findAll();
+
     if (!$program) {
         throw new \CodeIgniter\Exceptions\PageNotFoundException('Program dengan ID ' . $idprogram . ' tidak ditemukan');
     }
@@ -209,7 +219,8 @@ class ProgramLazis extends BaseController
     $data = [
         'title'           => 'Edit Program Lazis',
         'program'         => $program,           // Data program untuk diedit
-        'ranting'         => $ranting,           // Data ranting
+        'ranting'         => $ranting,   
+        'kodetransaksi'   => $kodetransaksi,          // Data ranting
         'muzaki'          => $muzaki,            // Data muzaki
         'mustahik'        => $mustahik,          // Data mustahik
         'selectedMuzaki'  => $selectedMuzaki,    // Muzaki yang sudah terhubung dengan program
@@ -296,6 +307,7 @@ class ProgramLazis extends BaseController
         'fotoprogram'     => $fotoprogramName ? $fotoprogramName : $program['fotoprogram'],
         'targetdonasi'    => $this->request->getPost('targetdonasi'),
         'terkumpul'       => $this->request->getPost('terkumpul'),
+        'kodetransaksi'    => $this->request->getPost('kodetransaksi')
     ];
 
     // Update data program
