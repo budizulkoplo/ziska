@@ -1,5 +1,5 @@
 <div class="container">
-    <h3>Tambah Transaksi</h3>
+    <h3>Input Tasaruf</h3>
 
     <?= form_open(base_url('admin/transaksi/tasarufsave')); ?>
     <?= csrf_field(); ?>
