@@ -319,7 +319,7 @@ $insertID = $this->db->insertID();
 
     // Inisialisasi model yang diperlukan
     $m_transaksi = new \App\Models\TransaksiModel();
-    $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
+    $m_kodetransaksi = new \App\Models\KodetransaksiModel();
     $m_muzaki = new \App\Models\Muzaki_model();
 
     // Ambil data transaksi berdasarkan ID
