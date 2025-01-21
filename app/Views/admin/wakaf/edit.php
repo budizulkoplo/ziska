@@ -8,6 +8,13 @@
 </div>
 
 <div class="form-group row">
+    <label class="col-3">Nama Wakaf</label>
+    <div class="col-9">
+        <input type="text" name="namawakaf" class="form-control" placeholder="Nama Wakaf" value="<?= $wakaf['namawakaf'] ?>" required>
+    </div>
+</div>
+
+<div class="form-group row">
     <label class="col-3">No Sertifikat</label>
     <div class="col-9">
         <input type="text" name="nosertifikat" class="form-control" placeholder="Nomor Sertifikat" value="<?= $wakaf['nosertifikat'] ?>" required>

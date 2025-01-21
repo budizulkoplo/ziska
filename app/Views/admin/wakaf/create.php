@@ -6,6 +6,12 @@
         <input type="text" name="idobject" class="form-control" placeholder="ID Object" required>
     </div>
 </div>
+<div class="form-group row">
+    <label class="col-3">Nama Wakaf</label>
+    <div class="col-9">
+        <input type="text" name="namawakaf" class="form-control" placeholder="Nama Wakaf" required>
+    </div>
+</div>
 
 <div class="form-group row">
     <label class="col-3">No Sertifikat</label>

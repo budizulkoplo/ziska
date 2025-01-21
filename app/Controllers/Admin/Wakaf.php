@@ -59,6 +59,7 @@ class Wakaf extends BaseController
         // Menyimpan data wakaf
         $data = [
             'idobject'     => $this->request->getPost('idobject'),
+            'namawakaf'     => $this->request->getPost('namawakaf'),
             'nosertifikat' => $this->request->getPost('nosertifikat'),
             'alamat'       => $this->request->getPost('alamat'),
             'koordinat'    => $this->request->getPost('koordinat'),
@@ -188,6 +189,7 @@ class Wakaf extends BaseController
         // Data yang akan diupdate
         $data = [
             'idobject'     => $this->request->getPost('idobject'),
+            'namawakaf'     => $this->request->getPost('namawakaf'),
             'nosertifikat' => $this->request->getPost('nosertifikat'),
             'alamat'       => $this->request->getPost('alamat'),
             'koordinat'    => $this->request->getPost('koordinat'),

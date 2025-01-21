@@ -8,6 +8,7 @@
     <thead>
         <tr>
             <th width="5%">No</th>
+            <th width="5%">Nama Wakaf</th>
             <th width="20%">No Sertifikat</th>
             <th width="20%">Alamat</th>
             <th width="20%">Pewakaf</th>
@@ -19,6 +20,7 @@
         <?php $no = 1; foreach ($wakaf as $item): ?>
         <tr>
             <td><?= $no ?></td>
+            <td><?= esc($item['namawakaf']) ?></td>
             <td><?= esc($item['nosertifikat']) ?></td>
             <td><?= esc($item['alamat']) ?></td>
             <td><?= esc($item['pewakaf']) ?></td>
