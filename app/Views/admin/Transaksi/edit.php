@@ -3,6 +3,13 @@
 
     <?= form_open(base_url('admin/transaksi/updateStatusTransaksi/' . $transaksi['idtransaksi'])); ?>
     <?= csrf_field(); ?>
+    <div class="form-group row">
+        <label for="namaprogram" class="col-3 col-form-label">Nama Program</label>
+        <div class="col-9">
+            <input type="text" id="namaprogram" name="namaprogram" class="form-control" value="<?= set_value('judulprogram', $transaksi['judulprogram']) ?>" readonly>
+            <input type="hidden" id="idprogram" name="idprogram" value="<?= set_value('program', $transaksi['program']) ?>">
+        </div>
+    </div>
 
     <!-- Input Tipetransaksi -->
     <div class="form-group row">

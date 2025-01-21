@@ -38,6 +38,7 @@ class Transaksi extends BaseController
         $transaksi = $m_transaksi
             ->select('transaksi.*, muzaki.nama AS nama_muzaki')
             ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
+            ->where('tipetransaksi !=', 'Tasaruf')
             ->findAll();
     } else {
         // Jika akses_level 'muzaki', hanya ambil transaksi untuk muzaki yang sedang login
@@ -45,11 +46,17 @@ class Transaksi extends BaseController
             ->where('muzaki', session('username'))
             ->findAll();
     }
+    $tasaruf = $m_transaksi
+            ->select('transaksi.*, muzaki.nama AS nama_muzaki')
+            ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
+            ->where('tipetransaksi', 'Tasaruf')
+            ->findAll();
 
     // Menyiapkan data untuk ditampilkan
     $data = [
         'title'      => (session('akses_level') === 'muzaki') ? 'Riwayat Transaksi' : 'Daftar Transaksi',
         'transaksi'  => $transaksi, 
+        'tasaruf'    => $tasaruf, 
         'program'    => $program, // Menyertakan data program
         'content'    => (session('akses_level') === 'muzaki') ? 'admin/transaksi/riwayat' : 'admin/transaksi/index',
     ];

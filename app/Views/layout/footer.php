@@ -86,9 +86,11 @@ $menu_layanan  = $menu->layanan();
 
 <script>
   $(function() {
-    $('#example1').DataTable();
+    $('#example1, #pemasukan, #tasaruf').DataTable();
   });
+  
 </script>
+
 </body>
 
 </html>
