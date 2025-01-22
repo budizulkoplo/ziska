@@ -20,5 +20,13 @@ class WakafModel extends Model
     {
         return $this->orderBy('idwakaf', 'DESC')->findAll();
     }
+
+    public function getLaporanWakaf()
+    {
+        return $this->select('namawakaf, idobject, idwakaf, nosertifikat, alamat, pewakaf, status')
+                    ->orderBy('idwakaf', 'DESC')
+                    ->findAll();
+    }
+
 }
 

@@ -76,6 +76,40 @@ $m_dasbor = new Dasbor_model();
   </div>
 </div>
 
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header bg-lazis">
+        <h3 class="card-title">Informasi Rekening</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Nama Rekening</th>
+              <th>Nomor Rekening</th>
+              <th>Saldo Akhir</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($rekening as $row): ?>
+            <tr>
+              <td><?= $row['namarek'] ?></td>
+              <td><?= $row['norek'] ?></td>
+              <td>Rp. <?= angka($row['saldoakhir']) ?></td>
+            </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </div>
+</div>
+
+
 <?php elseif ($session->get('akses_level') == "muzaki"): ?>
 <!-- Info box untuk muzaki -->
 <div class="row">

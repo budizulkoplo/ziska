@@ -104,10 +104,16 @@ $username=$session->get('nama');
         <div class="row">
           <div class="col-12">
             <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><?php echo $title ?></h3>
+              <div class="card-header d-flex align-items-center">
+                  <h3 class="card-title mb-0"><?= $title ?></h3>
+                  
+                  <!-- Cek apakah printstatus ada dan bernilai 'print' -->
+                  <?php if (isset($printstatus) && $printstatus === 'print'): ?>
+                      <button onclick="printPage()" class="btn btn-success ml-auto">
+                          <i class="fas fa-print"></i> Print
+                      </button>
+                  <?php endif; ?>
               </div>
-              <!-- /.card-header -->
               <div class="card-body" style="min-height: 500px;">
 
 

@@ -1,3 +1,15 @@
+<style>
+  .popup-content {
+    background-color: rgba(255, 255, 255, 0.5); /* Putih dengan transparansi 80% */
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .popup-content a {
+    background-color: rgba(255, 165, 0, 0.8); /* Warna tombol dengan transparansi */
+    color: white;
+  }
+</style>
+
 <main id="main">
   <!-- ======= Breadcrumbs Section ======= -->
   <section class="breadcrumbs">
@@ -60,7 +72,7 @@
 
       // Tambahkan popup untuk marker
       marker.bindPopup(`
-        <div>
+        <div class="popup-content">
           <h5>Detail Wakaf</h5>
           <p><b>Nama Wakaf:</b> ${item.namawakaf}</p>
           <p><b>idobject:</b> ${item.idobject}</p>
