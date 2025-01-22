@@ -13,7 +13,48 @@
     </script>
 </head>
 <body>
-<div class="container">
+<div class="container mb-4">
+    <form method="GET" action="">
+        <div class="row align-items-center">
+            <div class="col-md-3">
+                <label for="tahun_dari">Dari Tahun</label>
+                <input type="number" name="tahun_dari" id="tahun_dari" class="form-control"
+                    value="<?= $tahun_dari ?>" min="2000" max="<?= date('Y') ?>">
+            </div>
+            <div class="col-md-3">
+                <label for="tahun_ke">Ke Tahun</label>
+                <input type="number" name="tahun_ke" id="tahun_ke" class="form-control"
+                    value="<?= $tahun_ke ?>" min="2000" max="<?= date('Y') ?>">
+            </div>
+            <div class="col-md-3">
+                <label for="bulan_dari">Dari Bulan</label>
+                <select name="bulan_dari" id="bulan_dari" class="form-control">
+                    <?php for ($i = 1; $i <= 12; $i++): ?>
+                        <option value="<?= $i ?>" <?= $bulan_dari == $i ? 'selected' : '' ?>>
+                            <?= DateTime::createFromFormat('!m', $i)->format('F') ?>
+                        </option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="bulan_ke">Ke Bulan</label>
+                <select name="bulan_ke" id="bulan_ke" class="form-control">
+                    <?php for ($i = 1; $i <= 12; $i++): ?>
+                        <option value="<?= $i ?>" <?= $bulan_ke == $i ? 'selected' : '' ?>>
+                            <?= DateTime::createFromFormat('!m', $i)->format('F') ?>
+                        </option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+</div>
+
     <!-- Grafik Tahunan -->
     <h4>Grafik Pemasukan dan Pengeluaran Tahunan</h4>
     <canvas id="grafikTahunan"></canvas>

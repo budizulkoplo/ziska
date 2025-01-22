@@ -101,7 +101,13 @@ class Laporan extends BaseController
     public function zakat()
     {
         $m_transaksi = new \App\Models\TransaksiModel();
-    
+
+        // Ambil filter dari input
+        $tahunDari = $this->request->getVar('tahun_dari') ?: date('Y') - 1;
+        $tahunKe = $this->request->getVar('tahun_ke') ?: date('Y');
+        $bulanDari = $this->request->getVar('bulan_dari') ?: 1;
+        $bulanKe = $this->request->getVar('bulan_ke') ?: 12;
+
         // Grafik Tahunan
         $dataTahunan = $m_transaksi->query("
             SELECT
@@ -112,12 +118,13 @@ class Laporan extends BaseController
                 transaksi t
             WHERE
                 t.status = 'sukses'
+                AND YEAR(t.tgltransaksi) BETWEEN $tahunDari AND $tahunKe
             GROUP BY
                 YEAR(t.tgltransaksi)
             ORDER BY
                 tahun DESC
         ")->getResultArray();
-    
+
         // Grafik Bulanan
         $dataBulanan = $m_transaksi->query("
             SELECT
@@ -128,13 +135,15 @@ class Laporan extends BaseController
             FROM
                 transaksi t
             WHERE
-                 t.status = 'sukses'
+                t.status = 'sukses'
+                AND YEAR(t.tgltransaksi) BETWEEN $tahunDari AND $tahunKe
+                AND MONTH(t.tgltransaksi) BETWEEN $bulanDari AND $bulanKe
             GROUP BY
                 YEAR(t.tgltransaksi), MONTH(t.tgltransaksi)
             ORDER BY
                 tahun DESC, bulan DESC
         ")->getResultArray();
-    
+
         // Grafik per Ranting
         $dataRanting = $m_transaksi->query("
             SELECT
@@ -160,19 +169,23 @@ class Laporan extends BaseController
             WHERE
                  t.status = 'sukses'
         ")->getRow();
-    
+
         // Kirim data ke view
         $data = [
-            'title'             => 'Laporan Zakat',
+            'title'       => 'Laporan Zakat',
             'printstatus' => 'print', 
-            'dataTahunan'       => $dataTahunan,
-            'dataBulanan'       => $dataBulanan,
+            'tahun_dari'  => $tahunDari,
+            'tahun_ke'    => $tahunKe,
+            'bulan_dari'  => $bulanDari,
+            'bulan_ke'    => $bulanKe,
             'dataRanting'       => $dataRanting,
-            'dataPengeluaran'   => $dataPengeluaran,
-            'content'           => 'admin/laporan/zakat',
+            'dataTahunan' => $dataTahunan,
+            'dataBulanan' => $dataBulanan,
+            'content'     => 'admin/laporan/zakat',
         ];
-    
+
         return view('admin/layout/wrapper', $data);
     }
+
 
 }
