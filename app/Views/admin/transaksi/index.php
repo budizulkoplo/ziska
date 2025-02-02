@@ -20,7 +20,7 @@
                                 </a>
                             </div>
                             <div class="col-md-6">
-                            <a href="<?= base_url('admin/transaksi/tasaruf/' . $item['idprogram']) ?>" class="btn btn-outline-primary w-100 mt-2">
+                            <a href="<?= base_url('admin/transaksi/tasaruf/' . $item['idprogram']) ?>" class="btn btn-primary w-100 mt-2">
                                 <i class="fa fa-edit"></i> Tasaruf
                             </a>
                             </div>

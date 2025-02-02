@@ -38,7 +38,7 @@ class Transaksi extends BaseController
         $transaksi = $m_transaksi
             ->select('transaksi.*, muzaki.nama AS nama_muzaki')
             ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
-            ->where('tipetransaksi !=', 'Tasaruf')
+            ->where('tipetransaksi !=', 'Tasaruf', 'idranting=',$idranting )
             ->findAll();
     } else {
         // Jika akses_level 'muzaki', hanya ambil transaksi untuk muzaki yang sedang login
