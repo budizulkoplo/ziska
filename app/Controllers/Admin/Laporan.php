@@ -65,6 +65,29 @@ class Laporan extends BaseController
         return view('admin/layout/wrapper', $data);
     }
 
+    public function detailprogram()
+    {
+        $m_transaksi = new \App\Models\TransaksiModel();
+        
+        // Ambil data laporan zakat dengan join untuk mendapatkan nama ranting
+        $dataLaporan = $m_transaksi->query("
+            select * from transaksi a join programlazis p on a.program=p.idprogram
+join programmuzaki pm on p.idprogram=pm.idprogram
+join programmustahik pt on p.idprogram=pt.idprogram
+where `status`='sukses'
+        ")->getResultArray();
+
+        // Kirim data ke view
+        $data = [
+            'title'         => 'Laporan Program',
+            'printstatus' => 'print',    
+            'dataLaporan'   => $dataLaporan,
+            'content'       => 'admin/laporan/detailprogram',
+        ];
+
+        return view('admin/layout/wrapper', $data);
+    }
+
     public function transaksi()
     {
         $m_transaksi = new \App\Models\TransaksiModel();

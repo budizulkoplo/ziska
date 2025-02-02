@@ -20,10 +20,10 @@
                 <tr>
                     <th>No</th>
                     <th>Judul Program</th>
-                    <th>Total Nominal</th>
                     <th>Total Transaksi</th>
                     <th>Total Zakat</th>
                     <th>Total Tasaruf</th>
+                    <th>Sisa</th>
                     <th>Ranting</th>
                 </tr>
             </thead>
@@ -34,10 +34,10 @@
                         <tr>
                             <td><?= $no++ ?></td>
                             <td><?= htmlspecialchars($laporan['judulprogram']) ?></td>
-                            <td><?= number_format($laporan['total_nominal'], 0, ',', '.') ?></td>
                             <td><?= $laporan['total_transaksi'] ?></td>
                             <td>Rp. <?= number_format($laporan['total_zakat'], 0, ',', '.') ?></td>
                             <td>Rp. <?= number_format($laporan['total_tasaruf'], 0, ',', '.') ?></td>
+                            <td>Rp. <?= number_format($laporan['total_zakat']-$laporan['total_tasaruf'], 0, ',', '.') ?></td>
                             <td><?= htmlspecialchars($laporan['namaranting']) ?></td>
                         </tr>
                     <?php endforeach; ?>
