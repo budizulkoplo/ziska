@@ -35,6 +35,7 @@ class Laporan extends BaseController
         // Ambil data laporan zakat dengan join untuk mendapatkan nama ranting
         $dataLaporan = $m_transaksi->query("
             SELECT
+                idprogram,
                 t.judulprogram,
                 pl.idranting,
                 r.namaranting,
@@ -49,7 +50,7 @@ class Laporan extends BaseController
             WHERE
                 t.tipetransaksi = 'Zakat' OR t.tipetransaksi = 'Tasaruf'
             GROUP BY
-                t.judulprogram, pl.idranting, r.namaranting
+                idprogram,t.judulprogram, pl.idranting, r.namaranting
             ORDER BY
                 t.judulprogram
         ")->getResultArray();
@@ -65,61 +66,99 @@ class Laporan extends BaseController
         return view('admin/layout/wrapper', $data);
     }
 
-    public function detailprogram()
-    {
-        $m_transaksi = new \App\Models\TransaksiModel();
-        
-        // Ambil data laporan zakat dengan join untuk mendapatkan nama ranting
-        $dataLaporan = $m_transaksi->query("
-            select * from transaksi a join programlazis p on a.program=p.idprogram
-join programmuzaki pm on p.idprogram=pm.idprogram
-join programmustahik pt on p.idprogram=pt.idprogram
-where `status`='sukses'
-        ")->getResultArray();
+    public function detailprogram($idprogram)
+{
+    $m_transaksi = new \App\Models\TransaksiModel();
+    $m_program = new \App\Models\ProgramLazisModel();
 
-        // Kirim data ke view
-        $data = [
-            'title'         => 'Laporan Program',
-            'printstatus' => 'print',    
-            'dataLaporan'   => $dataLaporan,
-            'content'       => 'admin/laporan/detailprogram',
-        ];
+    // Ambil nama program berdasarkan idprogram
+    $program = $m_program->find($idprogram);
+    $namaProgram = $program ? $program['judulprogram'] : 'Program Tidak Ditemukan';
 
-        return view('admin/layout/wrapper', $data);
+    // Query untuk data muzaki (penghimpunan)
+    $dataMuzaki = $m_transaksi->select('transaksi.*, muzaki.nama AS nama_muzaki')
+        ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
+        ->where('tipetransaksi !=', 'Tasaruf')
+        ->where('transaksi.program', $idprogram)
+        ->where('transaksi.status', 'sukses')
+        ->findAll();
+
+    // Query untuk data mustahik (tasaruf)
+    $dataMustahik = $m_transaksi->select('transaksi.*, mustahik AS nama_mustahik')
+        ->join('mustahik', 'mustahik.idmustahik = transaksi.mustahik', 'left')
+        ->where('tipetransaksi', 'Tasaruf')
+        ->where('transaksi.program', $idprogram)
+        ->where('transaksi.status', 'sukses')
+        ->findAll();
+
+    // Kirim data ke view
+    $data = [
+        'title'       => 'Detail Program',
+        'namaProgram' => $namaProgram,
+        'dataMuzaki'  => $dataMuzaki,
+        'dataMustahik' => $dataMustahik,
+        'printstatus' => 'print',    
+        'content'     => 'admin/laporan/detailprogram',
+    ];
+
+    return view('admin/layout/wrapper', $data);
+}
+
+
+
+public function transaksi()
+{
+    $m_transaksi = new \App\Models\TransaksiModel();
+    
+    // Ambil input dari request
+    $startDate = $this->request->getGet('start_date');
+    $endDate = $this->request->getGet('end_date');
+    
+    // Query dasar
+    $query = "
+        SELECT
+            tgltransaksi,
+            tipetransaksi,
+            muzaki,
+            mustahik,
+            nominal,
+            cashflow,
+            judulprogram
+        FROM
+            transaksi
+        WHERE
+            status = 'sukses'
+    ";
+    
+    // Tambahkan filter tanggal jika tersedia
+    if (!empty($startDate) && !empty($endDate)) {
+        $query .= " AND tgltransaksi BETWEEN :startDate: AND :endDate:";
     }
-
-    public function transaksi()
-    {
-        $m_transaksi = new \App\Models\TransaksiModel();
-        
-        // Ambil data laporan transaksi dengan status 'sukses'
-        $dataLaporanTransaksi = $m_transaksi->query("
-            SELECT
-                tgltransaksi,
-                tipetransaksi,
-                muzaki,
-                mustahik,
-                nominal,
-                cashflow,
-                judulprogram
-            FROM
-                transaksi
-            WHERE
-                status = 'sukses'
-            ORDER BY
-                tgltransaksi DESC
-        ")->getResultArray();
-
-        // Kirim data ke view
-        $data = [
-            'title'                 => 'Laporan Transaksi',
-            'printstatus' => 'print', 
-            'dataLaporanTransaksi'  => $dataLaporanTransaksi,
-            'content'               => 'admin/laporan/transaksi',
-        ];
-
-        return view('admin/layout/wrapper', $data);
+    
+    $query .= " ORDER BY tgltransaksi DESC";
+    
+    // Jalankan query dengan parameter jika ada filter tanggal
+    if (!empty($startDate) && !empty($endDate)) {
+        $dataLaporanTransaksi = $m_transaksi->query($query, [
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ])->getResultArray();
+    } else {
+        $dataLaporanTransaksi = $m_transaksi->query($query)->getResultArray();
     }
+    
+    // Kirim data ke view
+    $data = [
+        'title'                 => 'Laporan Transaksi',
+        'printstatus'           => 'print',
+        'dataLaporanTransaksi'  => $dataLaporanTransaksi,
+        'content'               => 'admin/laporan/transaksi',
+        'start_date'            => $startDate,
+        'end_date'              => $endDate
+    ];
+    
+    return view('admin/layout/wrapper', $data);
+}
 
     public function zakat()
     {

@@ -95,8 +95,8 @@ class ProgramLazis extends BaseController
 {
     checklogin();  // Pastikan pengguna sudah login
     $m_program = new ProgramLazisModel();
-    $programmuzakiModel = new \App\Models\ProgrammuzakiModel();
-    $programmustahikModel = new \App\Models\ProgrammustahikModel();
+    $ProgrammuzakiModel = new \App\Models\ProgrammuzakiModel();
+    $ProgrammustahikModel = new \App\Models\ProgrammustahikModel();
 
     // Validasi input
     if (!$this->validate([
@@ -142,7 +142,7 @@ class ProgramLazis extends BaseController
     if (!empty($muzakiIds)) {
         $muzakiIdsArray = explode(',', $muzakiIds); // Ubah string ID menjadi array
         foreach ($muzakiIdsArray as $muzakiId) {
-            $programmuzakiModel->save([
+            $ProgrammuzakiModel->save([
                 'idprogram' => $programId,
                 'idmuzaki'  => $muzakiId
             ]);
@@ -154,7 +154,7 @@ class ProgramLazis extends BaseController
     if (!empty($mustahikIds)) {
         $mustahikIdsArray = explode(',', $mustahikIds); // Ubah string ID menjadi array
         foreach ($mustahikIdsArray as $mustahikId) {
-            $programmustahikModel->save([
+            $ProgrammustahikModel->save([
                 'idprogram' => $programId,
                 'idmustahik' => $mustahikId
             ]);
@@ -210,10 +210,10 @@ class ProgramLazis extends BaseController
     }
 
     // Ambil muzaki dan mustahik yang sudah terhubung dengan program
-    $programMuzakiModel = new \App\Models\ProgramMuzakiModel();
-    $programMustahikModel = new \App\Models\programMustahikModel();
-    $selectedMuzaki = $programMuzakiModel->getMuzakiByProgram($idprogram);
-    $selectedMustahik = $programMustahikModel->getMustahikByProgram($idprogram);
+    $ProgrammuzakiModel = new \App\Models\ProgrammuzakiModel();
+    $ProgrammustahikModel = new \App\Models\ProgrammustahikModel();
+    $selectedMuzaki = $ProgrammuzakiModel->getMuzakiByProgram($idprogram);
+    $selectedMustahik = $ProgrammustahikModel->getMustahikByProgram($idprogram);
 
     // Kirim data ke view
     $data = [

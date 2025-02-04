@@ -35,25 +35,40 @@ class Transaksi extends BaseController
     // Ambil data transaksi berdasarkan level akses pengguna
     if (session('akses_level') !== 'muzaki') {
         // Jika akses_level bukan 'muzaki', ambil semua transaksi dengan join ke tabel muzaki
+        if ($idranting == 1) {
         $transaksi = $m_transaksi
-    ->select('transaksi.*, muzaki.nama AS nama_muzaki')
-    ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
-    ->where('tipetransaksi !=', 'Tasaruf')
-    ->where('idranting', $idranting) 
-    ->findAll();
+            ->select('transaksi.*, muzaki.nama AS nama_muzaki')
+            ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
+            ->where('tipetransaksi !=', 'Tasaruf')
+            ->findAll();
+        } else {
+            $transaksi = $m_transaksi
+            ->select('transaksi.*, muzaki.nama AS nama_muzaki')
+            ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
+            ->where('tipetransaksi !=', 'Tasaruf')
+            ->where('idranting', $idranting) 
+            ->findAll();
+        }
     } else {
         // Jika akses_level 'muzaki', hanya ambil transaksi untuk muzaki yang sedang login
         $transaksi = $m_transaksi
             ->where('muzaki', session('username'))
             ->findAll();
     }
+    if ($idranting == 1) {
     $tasaruf = $m_transaksi
+            ->select('transaksi.*, muzaki.nama AS nama_muzaki')
+            ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
+            ->where('tipetransaksi', 'Tasaruf')
+            ->findAll();
+    } else {
+        $tasaruf = $m_transaksi
             ->select('transaksi.*, muzaki.nama AS nama_muzaki')
             ->join('muzaki', 'muzaki.username = transaksi.muzaki', 'left')
             ->where('tipetransaksi', 'Tasaruf')
             ->where('idranting', $idranting)
             ->findAll();
-
+    }
     // Menyiapkan data untuk ditampilkan
     $data = [
         'title'      => (session('akses_level') === 'muzaki') ? 'Riwayat Transaksi' : 'Daftar Transaksi',
