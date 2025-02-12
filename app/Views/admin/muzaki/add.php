@@ -96,10 +96,10 @@ echo csrf_field();
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-3">Ranting</label>
+                    <label class="col-3">Kelompok Layanan</label>
                     <div class="col-9">
                         <select name="idranting" class="form-control" required>
-                            <option value="" disabled selected>Pilih Ranting</option>
+                            <option value="" disabled selected>Pilih Kelompok Layanan</option>
                             <?php foreach ($ranting as $r): ?>
                                 <option value="<?= $r['idranting'] ?>" <?= set_value('idranting') == $r['idranting'] ? 'selected' : '' ?>>
                                     <?= $r['namaranting'] ?>

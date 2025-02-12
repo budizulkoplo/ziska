@@ -4,7 +4,7 @@
     <thead>
         <tr>
             <th width="5%">No</th>
-            <th width="75%">Nama Ranting</th>
+            <th width="75%">Kelompok Layanan</th>
             <th width="20%">Aksi</th>
         </tr>
     </thead>
