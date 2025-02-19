@@ -256,18 +256,17 @@ public function tasaruf($idprogram = null)
 
 public function tasarufsave()
 {
-    checklogin();  // Pastikan pengguna sudah login
+    checklogin(); // Pastikan pengguna sudah login
 
     $m_transaksi = new TransaksiModel();
     $m_rekening = new \App\Models\RekeningModel();
-    $m_mustahik = new \App\Models\Mustahik_model();
     $m_log = new \App\Models\TransactionLogModel();
     $m_kodetransaksi = new \App\Models\KodeTransaksiModel();
 
     // Validasi input
     if (!$this->validate([
         'tgltransaksi'  => 'required|valid_date',
-        'mustahik'        => 'required|string|max_length[100]',
+        'mustahik'      => 'required', // Tidak bisa pakai 'string' karena mustahik berupa array
         'nominal'       => 'required|decimal',
         'keterangan'    => 'permit_empty|string|max_length[255]',
     ])) {
@@ -275,7 +274,15 @@ public function tasarufsave()
     }
 
     $tipetransaksi = $this->request->getPost('kodetransaksi');
-    $nominal = $this->request->getPost('nominal');
+    $idprogram = $this->request->getPost('idprogram');
+    $judulprogram = $this->request->getPost('namaprogram');
+    $tgltransaksi = $this->request->getPost('tgltransaksi');
+    $nominal = $this->request->getPost('nominal'); // Nominal tetap satu nilai
+    $keterangan = $this->request->getPost('keterangan');
+    $mustahikList = $this->request->getPost('mustahik'); // Array mustahik
+
+    // Menggabungkan semua mustahik menjadi string dengan koma (,)
+    $mustahikString = implode(", ", $mustahikList);
 
     // Ambil data kode transaksi untuk mendapatkan idrek dan cashflow
     $kodeTransaksi = $m_kodetransaksi->where('kodetransaksi', $tipetransaksi)->first();
@@ -292,33 +299,33 @@ public function tasarufsave()
         return redirect()->back()->with('error', 'Rekening tidak ditemukan.');
     }
 
-    // Perhitungan saldo
     $saldoAwal = $rekening['saldoakhir'];
+
+    // Hitung saldo setelah transaksi
     $saldoAkhir = ($cashflow === 'Pemasukan') ? $saldoAwal + $nominal : $saldoAwal - $nominal;
 
-    // Menyimpan data transaksi
+    // Mulai transaksi database
+    $this->db->transStart();
+
+    // Simpan transaksi dengan mustahik dalam satu kolom
     $dataTransaksi = [
         'tipetransaksi' => $tipetransaksi,
-        'program'       => $this->request->getPost('idprogram'),
-        'judulprogram'  => $this->request->getPost('namaprogram'),
-        'tgltransaksi'  => $this->request->getPost('tgltransaksi'),
-        'mustahik'      => $this->request->getPost('mustahik'),
+        'program'       => $idprogram,
+        'judulprogram'  => $judulprogram,
+        'tgltransaksi'  => $tgltransaksi,
+        'mustahik'      => $mustahikString, // Mustahik disimpan dalam satu kolom
         'nominal'       => $nominal,
-        'keterangan'    => $this->request->getPost('keterangan'),
+        'keterangan'    => $keterangan,
         'idrek'         => $idrek,
         'cashflow'      => $cashflow,
         'status'        => 'sukses',
     ];
 
-    // Debugging query insert
-    // Menggunakan query builder
-$this->db->table('transaksi')->insert($dataTransaksi);
+    // Simpan transaksi ke database
+    $this->db->table('transaksi')->insert($dataTransaksi);
 
-// Mendapatkan ID terakhir yang dimasukkan
-$insertID = $this->db->insertID();
-
-    // Perbarui saldo akhir rekening
-    $m_rekening->update($idrek, ['saldoakhir' => $saldoAkhir]);
+    // Ambil ID transaksi yang baru dimasukkan
+    $insertID = $this->db->insertID();
 
     // Simpan log transaksi
     $dataLog = [
@@ -331,9 +338,17 @@ $insertID = $this->db->insertID();
     ];
     $m_log->insert($dataLog);
 
+    // Perbarui saldo rekening
+    $m_rekening->update($idrek, ['saldoakhir' => $saldoAkhir]);
+
+    // Commit transaksi database
+    $this->db->transComplete();
+
+    // Redirect dengan pesan sukses
     $this->session->setFlashdata('sukses', 'Transaksi berhasil ditambahkan.');
     return redirect()->to(base_url('admin/transaksi'));
 }
+
 
 
     // Menampilkan form untuk mengedit transaksi

@@ -13,25 +13,31 @@
             <input type="hidden" id="kodetransaksi" name="kodetransaksi" class="form-control" value="Tasaruf" readonly>
         </div>
     </div>
-    
+
+    <!-- Input Tanggal Transaksi -->
     <div class="form-group row">
         <label for="tgltransaksi" class="col-3 col-form-label">Tanggal Transaksi</label>
         <div class="col-9">
             <input type="date" id="tgltransaksi" name="tgltransaksi" class="form-control" value="<?= set_value('tgltransaksi') ?>" required>
         </div>
     </div>
-    <!-- Input mustahik (tergantung pada program yang dipilih) -->
+
+    <!-- Input Mustahik dengan Checkbox -->
     <div class="form-group row">
-        <label for="mustahik" class="col-3 col-form-label">Mustahik</label>
+        <label class="col-3 col-form-label">Mustahik</label>
         <div class="col-9">
-            <select id="mustahik" name="mustahik" class="form-control" required>
-                <option value="">Pilih Mustahik</option>
-                <?php foreach ($mustahik as $item): ?>
-                    <option value="<?= esc($item['nama']); ?>" <?= set_select('nama', esc($item['nama'])); ?>>
-                        <?= esc($item['nama']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+            <div class="form-check">
+                <input type="checkbox" id="checkAll" class="form-check-input">
+                <label for="checkAll" class="form-check-label"><b>Cek Semua</b></label>
+            </div>
+            <hr>
+            <?php foreach ($mustahik as $item): ?>
+                <div class="form-check">
+                    <input type="checkbox" name="mustahik[]" value="<?= esc($item['nama']); ?>" class="form-check-input mustahik-checkbox"
+                        <?= set_checkbox('mustahik[]', esc($item['nama'])); ?>>
+                    <label class="form-check-label"><?= esc($item['nama']); ?></label>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
@@ -61,3 +67,11 @@
 
     <?= form_close(); ?>
 </div>
+
+<!-- Script untuk Cek Semua -->
+<script>
+    document.getElementById('checkAll').addEventListener('change', function() {
+        let checkboxes = document.querySelectorAll('.mustahik-checkbox');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+</script>
